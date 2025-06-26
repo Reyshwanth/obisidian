@@ -1,0 +1,247 @@
+{
+  "main": {
+    "id": "30ac283b8265c3eb",
+    "type": "split",
+    "children": [
+      {
+        "id": "faa8399232d06619",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f2a9e3f504f5dfbb",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Chart.canvas",
+                "viewState": {
+                  "x": 216.5,
+                  "y": -188.5,
+                  "zoom": -0.1807056740850043
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "Chart"
+            }
+          },
+          {
+            "id": "0967f751812d56f8",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "JSZBLRGS/Hu et al. - 2024 - Tightly Coupled Visual-Inertial-UWB Indoor Localization System With Multiple Position-Unknown Anchor.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Hu et al. - 2024 - Tightly Coupled Visual-Inertial-UWB Indoor Localization System With Multiple Position-Unknown Anchor"
+            }
+          },
+          {
+            "id": "e056563792a28bb2",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "SLRDV2K9/Ruan et al. - 2022 - Cooperative Relative Localization for UAV Swarm in GNSS-Denied Environment A Coalition Formation Ga.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Ruan et al. - 2022 - Cooperative Relative Localization for UAV Swarm in GNSS-Denied Environment A Coalition Formation Ga"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "afa280fbc8733f4b",
+    "type": "split",
+    "children": [
+      {
+        "id": "9d1d9960b078957e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1610a5cb39926253",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "byModifiedTime",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "099eb326040fb1ff",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "7c1ef8ab60bdf2c3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "ed8d236ba29dedef",
+    "type": "split",
+    "children": [
+      {
+        "id": "8642496ab30ae79a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1415c61256574b04",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Swarm Localization.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Swarm Localization"
+            }
+          },
+          {
+            "id": "f5d636e359c51567",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "CW8ISA2R/Zhang - 2024 - Cooperative Positioning Based on UWB and MDS.pdf",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Zhang - 2024 - Cooperative Positioning Based on UWB and MDS"
+            }
+          },
+          {
+            "id": "2d5b6dcd9e1695c8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "0754e99e27a70577",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "2025-06-25.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 2025-06-25"
+            }
+          },
+          {
+            "id": "99fbaa8b4dfa802a",
+            "type": "leaf",
+            "state": {
+              "type": "copilot-chat-view",
+              "state": {},
+              "icon": "message-square",
+              "title": "Copilot"
+            }
+          },
+          {
+            "id": "7c204edb087debf2",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "copilot:Open Copilot Chat": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "99fbaa8b4dfa802a",
+  "lastOpenFiles": [
+    "Ideas.md",
+    "Swarm Localization.md",
+    "Untitled.canvas",
+    "XUGVUFL7/Al-Jarrah et al. - 2024 - Exploring Deep Learning-Based Visual Localization Techniques for UAVs in GPS-Denied Environments.pdf",
+    "2025-06-25.md",
+    "SYT2HD7L/Gao et al. - 2024 - Cooperative Localization in Transportation 5.0.pdf",
+    "SYT2HD7L",
+    "tmp-8WODIf/Gao et al. - 2024 - Cooperative Localization in Transportation 5.0.pdf",
+    "tmp-8WODIf",
+    "AKQN39QQ/6.html",
+    "AKQN39QQ",
+    "tmp-NBlJig/6.html",
+    "tmp-NBlJig",
+    "tmp-NhSbeY/file.tmp",
+    "Old Paper Info.md",
+    "What Tech to Use.md",
+    "Chart.canvas",
+    "2025-06-17.md",
+    "][[Wymeersch et al. - 2009 - Cooperative Localization in Wireless Networks.pdf.md",
+    "Wymeersch.md",
+    "Untitled 1.canvas",
+    "Untitled 4.canvas",
+    "Untitled 3.canvas",
+    "Untitled 2.canvas"
+  ]
+}

@@ -1,0 +1,317 @@
+Indoor Localization Service based on the Data Fusion of Wi-Fi and RFID
+Yijin Wang, Xiaolong Xu College of Computer Nanjing University of Posts and Telecommunications Nanjing, China Email: snakewang@163.com, xuxl@njupt.edu.cn
+Abstract—With more and more requirements of navigation for complex indoor environments, the indoor location service has become the hotspot in the field of mobile computing. However, with only one single type of wireless signal, it is difficult to achieve ideal accuracy of positioning in the indoor environments full of indoor noises. In order to improve the performance of indoor location service, we propose a novel indoor localization mechanism, which realizes an effective data fusion of Wi-Fi and RFID signals via on-demand deployment of Wi-Fi access points and RFID tags. This mechanism can eliminate the blind areas of location so as to realize the low-cost and high-accurate indoor localization. In order to further improve the location performance, we put forward the Kalman filter algorithm based on singular value judgment (KFASVJ) and KFASVJ-based indoor localization algorithm (KILA). The KILA is adopted to judge the maximum singular value of Wi-Fi signal wave, so as to optimize the wireless signal wave. KILA can reduce the indoor noise interference with Wi-Fi signals, so to realize a high accuracy of positioning and real-time positioning stability in complex indoor environments. The experimental results and the performance analysis show that KILA achieves a better accuracy of positioning than typical Kalman-filter-based localization algorithm (KFLA), about 13% to 28% accuracy of positioning improvement in the indoor environments with the [35dB, 65dB] indoor noise. KILA has the lower time complexity, the higher location speed and the better stability, and it can maintain a good localization performance even in the indoor environment with the indoor noises changing dynamicly.
+Keywordsü indoor localization; data fusion; RFID; Wi-Fi
+I. INTRODUCTION
+How to achieve accurate indoor localization to provide effective location services for users in large-scale, complex indoor environments, such as museums, exhibition centers, hospitals, airport lounges, shopping malls and so on, has become a hot research topic in both academia and industry [1]. So far, quite a few indoor localization systems have been realized, including Active Badge [2], Active Bat [3], Cricket [4], Smart Floor [5], Easy Living [6], RADAR [7-8], SpotON [9], the infrared-camera-based localization system [10], the Doppler-radar-based localization system [11], the synthetic aperture-based localization system [12], Walkie-Markie [13], Tactical Locator (TOR) [14] and so on [15-18]. The typical localization algorithms include the complex-reduced 3D trilateration localization approach (COLA) [19], the cooperative Eigen-radio positioning (CERP) [20], the localization algorithm based on the acoustic background spectrum (ABS) [21], the localization algorithm based on the
+genetic algorithm [22], and the localization algorithm based on the discriminant-adaptive neural network [23]. The current localization systems and algorithms usually have the following problems: 1) It is difficult to achieve the ideal accuracy of positioning with only one single type of wireless signal. The indoor localization technology based on Wi-Fi signals or radio frequency identification (RFID) tags alone is difficult to eliminate the blind area, where wireless signal is too weak to be detected, and also difficult to reduce localization errors caused by activities of people and furniture. The localization system based on infrared ray only is easily affected by sunlight and fluorescent lamplight. 2) Many current localization approaches bring high hardware cost, especially in large-scale indoor environments. For instance, the infrared-camera-based localization system needs to deploy the expensive ultrasonic sensors in order to improve the accuracy of positioning [3]. In a very large indoor area, so many ultrasonic sensors will increase the cost and make the infrared-camera-based localization system difficult to be popularized. 3) Most current localization approaches are poor in the environmental adaptability. For example, TOR [14] requires people equipped with additional devices such as dual shoeintegrated inertial sensor, a processing and communications device and ranging devices. Due to the restriction of infrared sensor, TOR needs that the intensity of light in indoor environment remain stable. For another instance, Active Badge [2] not only demands additional localization devices but also has a special restriction in the process of indoor localization. In order to solve the above problems to improve the performance of indoor location service, we propose a novel indoor localization mechanism, which realizes an effective data fusion of Wi-Fi and RFID signals via on-demand deployment of Wi-Fi access points and RFID tags. The main contributions of this paper include: 1) A new indoor localization model is proposed, which integrates data of Wi-Fi and RFID together. The model is based on sparse Wi-Fi access points and cheap RFID tags deployed on-demand. Besides, this novel model is able to effectively reduce the effect of active people and obstacles on accuracy of positioning, at the same time, in order to achieve low cost and high accuracy of positioning, it needs to ensure the indoor signal coverage and eliminate blind areas. 2) The Kalman filter algorithm based on singular value judgment (KFASVJ) is proposed, which can be applied to optimize indoor wireless signal by making an efficient indoor
+2016 IEEE International Conference on Web Services
+978-1-5090-2675-3/16 $31.00 © 2016 IEEE DOI 10.1109/ICWS.2016.31
+180
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+noise reduction. Furthermore, in this way, it will obviously improve localization performance, including accuracy of positioning, stability and anti-interference ability in a largescale and complex indoor environment with enormous amount of roaming people. 3) Based on KFASVJ, we propose an improved indoor localization algorithm, KILA, which refers the reference node selection algorithm based on trilateration (RNST) [24] and applies the data fusion of Wi-Fi and RFID. KILA can be applied to build an on-demand deployable, environmental adaptable, effective complementary and efficient indoor localization system. This paper includes following five parts. Section 2 presents the related works in the research of indoor localization. Section 3 describes the indoor localization model which is based on data fusion of Wi-Fi and RFID, and presents its advantages in the process of indoor localization. Section 4 provides the details of KFASVJ and KILA with pseudo codes. Section 5 evaluates the proposed indoor localization algorithm through experiments, and the results of these experiments are also analyzed. Finally, in section 6, we conclude the paper and give directions for the future work.
+II. RELATED WORKS
+Current indoor localization systems are usually based on single wireless technology, such as infrared ray, Wi-Fi, RFID, ultrasonic sensors, Bluetooth, etc. Each of these technologies has its own typical advantages, at the same time, it also brings various kinds of defects [25]. Active Badge improves the accuracy of positioning by deploy infrared sensors intensively [2]. However, the major defect of Active Badge is that infrared sensors are easily affected by sunlight and fluorescent lamplight. Active Bat applies the positioning principle of bat to indoor localization with ultrasonic sensors, realizing the accuracy of positioning within 9cm in 95% of cases [3], but at the same time, a large number of ultrasonic sensors bring the high hardware cost. Walkie-Markie can generate the indoor map automatically via Wi-Fi signals and the inertial sensor embedded in mobile phone without studying the interior structure of building in advance [13]. TOR is for rescuing in fire disaster, which demands each firefighter equipped with two inertial sensors and an interactive detector based on radiofrequency (RF) signals [14]. We can find that with single wireless technology, it is quite difficult to achieve an ideal balance between the accuracy of positioning and the hardware cost. Current indoor localization algorithms can be generally classified into the following two categories: distance-based localization algorithms and distance-free localization algorithms [26]. Distance-based localization algorithms generally compose of two steps: the distance measurement and the location calculation. The typical methods of distance measurement are Time of Arrival (TOA), Time Difference of Arrival (TDOA), Angle of Arrival (AOA), Received Signal Strength Indicator (RSSI), etc. TDOA and RSSI are wildly applied, no introduction. TDOA usually has to install ultrasonic transceivers and RF transceivers, and calculate the distance between each pair of communication nodes based on
+the time difference of these two kinds of received wireless signals, while the line-of-sight (LOS) is a prerequisite. RSSI is simple and low-cost, which does not need additional devices, and has been applied to quite a few indoor localization systems such as SpotON [9]. The localization calculation algorithms of mobile nodes include the geometric algorithm, the maximum likelihood estimation algorithm, the min-max localization algorithm, etc. The trilateration-based positioning algorithm is a typical geometric algorithm [27], which is shown in Fig. 1(a). The Fig. 1(b) and Fig.1(c) show triangulation-based positioning algorithm and maximum likelihood algorithm [28], respectively. Compared to the distance-based localization algorithms, the distance-free localization algorithms estimate the distance between different nodes or the coordinates of different nodes by network connectivity instead of measuring the distance directly. A typical distance-free localization algorithms are improved DV-Hop [29] and the Self-Positioning Algorithm (SPA) [30], which have lower accuracy of positioning and some restrictions.
+III. LOCALIZATION MODEL BASED ON DATA FUSION
+The Wi-Fi-based indoor localization usually suffers from the serious interference of indoor noise. The communication frequency of Wi-Fi signal is 2.4GHz, which is the same as the resonance frequency of water. Unfortunately, the water content of human body is about 70%. Lots of moving people will bring a great deal of interference on Wi-Fi signals, leading to the serious signal distortion in the process of signal propagation and the positioning error. That is to say, human bodies are main indoor obstacles, which decrease the accuracy of wireless signal propagation. As shown in Fig. 2, we implemented a series of experiments to analyze the impact of distance and human body on wireless signal strength. In Fig. 2, “obstacle” represents a man standing between a Wi-Fi router and a wireless signal receiver. Oppositely, “no obstacles” means there have no obstacle in the corresponding experiment. Fig. 2 indicates that the far the distance between receiver and Wi-Fi router, the low the localization accuracy.
+A
+B
+C
+D
+A
+CB
+D
+O
+˄a˅ ˄b˅
+ĂĂ
+D
+n
+1
+2
+3
+4
+5 6
+˄c˅
+Figure. 1. Calculation algorithms of node coordinate. (a) Trilateration, (b) Triangulation, (c) Maximum likelihood
+181
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+At the same time, human bodies decrease the accuracy of wireless signal propagation indeed.
+Although RFID tags are cheap, simple, flexible and easy to be installed, their short communication range makes RFID unsuitable for large indoor environments. First, the blind area of localization based on RFID is difficult to guarantee the complete coverage of localization. Second, the failure of RFID tags will decrease the stability, the robustness and the accuracy of positioning of localization, or even lead to the failure of localization system. The core idea of this paper is to fuse the data of Wi-Fi and RFID together to localize mobile objects (MOs), which are equipped Wi-Fi and RFID signal transceivers. First of all, a large museum exhibition hall (120m*60m) is chosen to be designed as the typical indoor localization scenario, as shown in Fig. 3. As the anchors, 7 Wi-Fi APs, marked as W1~W7, are deployed in the museum exhibition hall with the subtriangular of approximately 30m longitudinal and transversal intervals respectively. R1~R27 are RFID tags:
+R1~R4 are installed on the corners, R5 and R6 are installed on the coffee table in the rest area, R7 and R8 are installed on the conference table, and R9~R27 are installed on showcases with 6m interval. Besides, M1~M5 are MOs. The localization model based on data fusion of Wi-Fi and RFID, is able to provide self-adaptive and available signals for inside MOs. That is to say, this model can be compatible with three different situations of wireless signals automatically, including only Wi-Fi signals available, only RFID signals available, and both of Wi-Fi and RFID available. This flexible mechanism can achieve low cost, high accuracy and complete signal coverage of positioning. Each MO is localized ondemand based on the data fusion, which will reduce the effect of indoor noise effectively and improve accuracy of positioning obviously. Furthermore, for RFID tags are able to store small data sets [25], this model can record useful information of the objects tagged with RFID tags and store these information data in the database offline before starting an indoor localization process. During the localization process, not only the coordinates of MOs, but also the intuitive descriptions of location around MOs can be acquainted. For example, we can get the location information of M1, that the coordinate of M1 is (x y) and
+M1 is near the northern coffee table. Except for those indoor environments like museum, the proposed localization service can also be implemented in other kind of indoor scenes, such as hospital and factory. We deployed Wi-Fi APs on ceiling based on the indoor floor plan, then we installed RFID tags at the edge of Wi-Fi signals to eliminate blind area. In addition, in some crowed area or the necessarily-passing area (e.g., crossroad, T intersection, and exit), we can install additional RFID tags to further improve localization accuracy. For example, in a hospital, additional RFID tags might be installed at the information center, consulting rooms, or pharmacies. In factory, additional RFID tags might be installed at the plant entrance or the emergency exit.
+IV. LOCALIZATION ALGORITHM
+A. KFASVJ
+Indoor environments usually have medium or large mean values of noise which have large variation amplitudes, and bring much trouble to indoor localization algorithms to reduce the effect of noise. The Kalman filter [31] is a recursive optimization method which can resolve the linear filtering problem of discrete data. Optimizing received signal by the standard Kalman filter, to some extent, can reduce the effect of indoor noise on the accuracy of positioning. However, due to the lack of careful distinction on different mean value of noise, the performance of indoor localization algorithm based on the standard Kalman filter is not good enough for the indoor environments with high traffic and complex structure. The distance measurement is the key of RSSI-based localization, easy to be affected by indoor noises. Experimental results [32] also show that the Kalman filter can optimize RSSI values and improve the accuracy of positioning and stability. However, the accumulated error of the Kalman filter is constantly on the rise
+(a) (b)
+Figure. 2.(a) Signal intensities of different distance away from a Wi-Fi router; (b). Box chart of (a)
+Figure. 3. A large museum exhibition hall
+M1
+M2
+M3
+M4
+M5
+W1
+W2 W3
+W4 W6
+W7
+R10
+R12 R13 R14 R15 R16
+R17
+R18
+R19
+R20 R21 R22 R23 R24
+R25 R26 R27
+R6 R8
+R3 R4
+W5
+R1
+R5 R7
+R2
+R9 R11
+182
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+along with the increasing iteration times, and it will have a negative influence on accuracy of positioning. Especially in large, crowded indoor environment, the accumulated error will make the localization result unideal and RSSI values greatly deviate from the actual ones. To improve the localization performance further, we propose KFASVJ in this paper. The main idea of KFASVJ is based on the singular value theory of the matrix theory. KFASVJ sets a singular value judgment in the self-circulating optimization process of the Kalman filter, and then sets the gain of residual to zero selectively in the self-circulating process of Kalman filter based on an empirical threshold. Thus, the self-circulating process is suspended and the RSSI value is estimated in the self-circulation with inertia predicted characteristic of Kalman filter. As a result, KFASVJ can reduce the effect of the influence of accumulated error, the effect of strong nonlinear characteristics and the large deviation between noise characteristic and Gaussian distribution, so as to optimize the RSSI value. The discrete process of KFASVJ can be represented by the following difference equation and observation equation,
+where the n-dimensional status variable n
+X ∈ R , and the m
+dimensional observation variable μ∈ Rm [33]:
+k k1 k1 k1
+X AX Bω ε
+− −−
+= + + (1)
+k kk
+μ = HX + φ (2)
+whereε is the process motivation noise, φis the observation
+noise, and both of them are the white noise vector with the value of expectation, 0. In (1), A is a n× n gain matrix which links the RSSI values in the k -th self-circulating process and the (k +1)-th self-circulating process, and B is
+a n × l gain matrix and it is usually set to zero in the actual
+localization system. In (2), ωk−1 is a l -dimensional control
+vector, and H is the gain of the status variable X k on the
+observation variable μk .
+Xˆ k ' is defined as the value of prior status estimation in the
+k -th self-circulating process based on the self-circulating
+processes from the 1-st to the (k -1)-th . ˆ ' n
+X k ∈ R , which is
+the prior estimated value of RSSI. ˆ
+X k is defined as the value
+of posterior status estimation, which is modified by the
+observation variable μk . ˆ n
+X k ∈ R , which is based on the
+posterior status estimation value of the observation variable
+μk in the k -th self-circulating process. Thus, the RSSI
+value can be calculated as following:
+'( )
+ˆ ˆ'
+ˆ
+kk k k
+X = X + K μ − HX (3)
+where ˆ '
+kk
+μ − HX is defined as the residual value. If the
+residual value is set to 0, ˆ ˆ '
+kk
+X = X , which means the
+posterior RSSI value is equal to the prior RSSI value. K is
+defined as the gain matrix of residual value. Pk ' and Pk are
+the covariance of prior status error ek ' and the covariance of
+posterior status error ek respectively. Besides, both of ek '
+and ek are based on RSSI values. K is formulated as:
+( )1
+''
+TT kk k
+K P H HP H R
+−
+= + (4)
+where R is the covariance matrix of observation noiseφ. KFASVJ calculates the maximum singular value of the residual to deduct the relationship between the estimated RSSI value in the (k -1)-th self-circulating process and the
+Figure. 4. Workflow of KFASVJ
+(k +1)-th RSSI value. The larger residual means the larger
+difference between these two estimated RSSI values. All the singular values of residual determine the degree of difference together. The optimization process of the standard Kalman filter is an “inertia” optimization process, and the RSSI values between the two iterations also have the “inertia” feature, so that the difference between them does not become large suddenly. However, along with the gradually increasing accumulated error, the estimated RSSI values will deviate from the actual values, and the larger singular value of
+End
+Y
+Y
+N
+N
+Y
+Start
+Time update 1. Calculate the RSSI prior value
+2. Calculate the covariance of the RSSI priori error
+Load A, B, H k=1,2...n
+State update 1. Calculate the gain matrix
+2. Update the estimated RSSI value
+3. Update the covariance of RSSI prior error
+k = k+1
+N
+183
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+residual will form gradually. The large minimum singular value of residual means that all the singular values and the accumulated error are large. At this time, the estimated RSSI value is inaccurate, and it will have a serious negative effect on the accuracy of positioning. Therefore, the maximum singular value of residual is chosen to participate in the judgment process to maintain the accuracy of estimated RSSI values. Before calculating the gain matrix K in every time of self-circulating optimization process, we need to judge the maximum singular value of residual based on the empirical threshold. After that, different data processes need to be applied on the gain matrix K according to different judgments. The empirical threshold ρ can be calculated as:
+( )2 2
+ρ = 1 + λ + δ (5)
+If the maximum singular value of residual is not less than the empirical threshold, KFASVJ will set the gain matrix to 0 and enter the next self-circulating process from now. Otherwise, KFASVJ does not take any additional actions in the self-circulating process. In (5), λ is the distance error threshold, and δ is the error threshold of localization system. The optimization process of KFASVJ is a “forecastjudgment-correction” self-circulating operation on RSSI values of wireless signals, as shown in Fig. 4.
+B. KILA
+KILA realizes the data fusion of Wi-Fi and RFID signals. First, RSSI values are optimized by KFASVJ. Then, the distances between APs and MOs are calculated with trilateration. Finally, the more accurate coordinate of MOs is got based on the data fusion of Wi-Fi and RFID signals. The RFID-based localization component of KILA is not only responsible for the optimization of the Wi-Fi-based localization, but also the ideal complement of it, which benefits from RFID tags being able to be placed flexibly at any corner, where blind spots are easily found. The arrangement of RFID tags can eliminate blind spots so that the robustness of localization system can further improved. The placement of Wi-Fi APs and RFID tags for KILA should comply with the following principles: 1) Wi-Fi APs should be placed as equilateral triangles approximately, instead of regular uniform grids, referring to RNST which can make the localization error less than that of the traditional placement [24]. 2) When a MO needs to be localized, KILA will select its nearby group of Wi-Fi APs which can form the approximate equilateral triangle. 3) RFID tags are deployed on crowded or symbolic areas to improve the accuracy of positioning, and on the corner of the localization space to avoid blind spots. Compared with other placements of Wi-Fi APs, RNST has its own drawback. With RNST, the accuracy of positioning has been improved to the limit in the environment where the density of Wi-Fi APs is in [1/100m2, 3.2/100m2], which means the positioning accuracy of RNST cannot be improved further, and even worse, the positioning accuracy of RNST will suffer enormously from adding more Wi-Fi APs. KILA inherits the benefits of RNST, including fast real-time
+response, small time overhead and high accuracy of positioning in noisy and complex indoor environments. At the same time, KILA controls the density of Wi-Fi access points in [1/100m2, 3.2/100m2] and places RFID tags on indoor fixtures will overcome the drawback of RNST When a MO moves inside, KILA will differentiate the network environment around the MO, and use the model of shadowing [7] to measure the distance between the MO and an AP:
+0
+- RSSI +RSSI
+10
+d =10 α
+˄˅
+(6) where α is a path loss coefficient determined by experiences, RSSI is the received signal strength value of
+the MO, and 0
+RSSI is the received signal strength value at
+1m away from the AP. Suppose there is a MO, which can only receive Wi-Fi signals, and there are n Wi-Fi APs whose signals can be received by the MO. These APs are be put into several groups, and each group contains 3 APs, which can form an approximately equilateral triangle around this MO. Suppose there are n' groups totally. KFASVJ and trilateration is used to optimize all the RSSI values of Wi-Fi APs from the selected groups and to calculate the distances between this MO and these Wi-Fi APs. According to the n' groups of Wi
+Fi APs and the other C3 '
+n − n groups, we can calculate the
+estimated coordinates ( ', ')
+ii
+x y and ( , )
+ii
+x y respectively
+and then get the location coordinate ˄x , y ˅finally, which
+is the average of all the estimated coordinates:
+3
+, = (1/ ( ' 1))((1/ (C ')) ( , ) ( ', '))
+n ii i i
+˄x y ˅ n + − n ∑ x y + ∑ x y (7)
+If the MO can only receive signals from m RFID tags, KILA will start a localization calculation for this MO by trilateration based on appropriate RSSI values to calculate the
+coordinates ( , )
+jj
+x y of the MO. Then, we can obtain the final
+location coordinate˄x , y ˅:
+3
+, = (1 / C ) ( , )
+m jj
+˄x y ˅ ∑ x y (8)
+If the MO can receive both Wi-Fi signals and RFID signals, KILA will calculate the coordinate of this MO with (7) and (8) respectively to get the estimated coordinates ˄x ', y '˅and˄x '', y ''˅of this MO to calculate the final
+location coordinate˄x , y ˅:
+˄x , y ˅= (1/ 2)((x ', y ') + (x '', y '')) (9)
+The pseudo code of KILA is as follows:
+Algorithm KFASVJ-based Indoor Localization Algorithm (KILA)
+# Input: the RSSI value of Wi-Fi signal (RSSI1), the
+RSSI of RFID signal (RSSI2), RSSI0, α; the coordinate of APs, the distance between per pair of APs, Algorithm Ι, Trilateration-based Positioning Algorithm(TPA) # Output: the coordinate of MO
+184
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+1) set n = num of the received RSSI1s 2) set m = num of the received RSSI2s 3) set n' =num of the sets of the equilateral triangle # a group is an equilateral triangle composed of three different Wi-Fi access points 4) while ( n+m >=3) 5) if ( n >=3 && m ==0)
+6) get all values of the 1
+RSSI ' by the KFASVJ
+#1
+RSSI ' is the optimized RSSI1
+# i = 1, 2, 3, 4...n
+7) get
+01
+- RSSI +RSSI 10
+=10
+di α
+′
+˄˅
+8) while ( n' )
+9) get the coordinate ( ', ')
+ii
+x y by the TPA
+10) end while
+11) get the coordinate ( , )
+ii
+x y by the TPA from the other
+C3 '
+n − n groups
+12) get the coordinate
+3
+, = (1 / ( ' 1))((1 / (C ')) ( , ) ( ', '))
+n ii i i
+˄x y ˅ n + − n ∑ x y + ∑ x y
+13) else if ( m >=3 && n ==0)
+14) get all values of the 2
+RSSI '
+# j = 1, 2, 3...m
+15) get
+02
+- RSSI +RSSI
+10
+=10
+dj α
+′
+˄˅
+16) get the coordinate ( , )
+jj
+x y by the TPA
+17) get 3
+, = (1 / C ) ( , )
+m jj
+˄x y ˅ ∑ x y
+18) else 19) repeat 6) and 7) 20) while ( n >=3) 21) while ( n' )
+22) get the coordinate ( ', ')
+ii
+x y by
+the TPA
+23) end while
+24) get the coordinate ( , )
+ii
+x y by the
+TPA from the other C3 '
+n − n groups
+25) end while
+26) get the coordinate
+3
+', ' = (1 / ( ' 1))((1 / (C ')) ( , ) ( ', ')
+n ii i i
+˄x y ˅ n + − n ∑ x y + ∑ x y
+27) repeat 14) and 15) 28) while ( m >=3)
+29) get the coordinate ( , )
+jj
+x y by the
+TPA
+30) end while
+31) get 3
+'', '' = (1 / C ) ( , )
+m jj
+˄x y ˅ ∑ x y
+32) get ˄x , y ˅= (1 / 2)((x ', y ') + (x '', y ''))
+33) end if 34) end while
+V. EXPERIMENTS AND PERFORMANCE ANALYSIS
+A. Performance index
+The accuracy of positioning, the stability of positioning and the time overhead are chosen as the main performance index to evaluate KILA and current typical indoor localization algorithms through a series of experiments. The accuracy of positioning indicates the proximity of the estimated coordinate to the actual coordinate of a MO. In this paper, the root-mean-square error (RMSE), denoted asζ , is used to evaluate the accuracy of positioning. The positioning
+error, denoted asγi , indicates the Euclidean distance between
+the estimated coordinate and the actual coordinate of the MO.
+The smaller ζ is, the smaller γi will be, and at the same
+time, the higher the accuracy of positioning will be, and vice versa. RMSE is calculated as:
+( ) ( )2
+=1 i
+ζ n ∑ γ (10)
+where n is the number of round of experiments about the accuracy of positioning. The stability of positioning refers to how the positioning error changes along with the rapid change of the mean value of noise. The standard deviation of indoor noise, denoted as k , is used to refer to the variation range of mean value of noise, and the bigger k is, the greater the variation range will be. That is to say, the minimal standard deviation of indoor noise means the excellent positioning stability. The time overhead indicates how fast an indoor localization algorithm responds.
+B. Experiments
+We designed an experimental scene, which is a 120m×60m rectangular indoor space, as shown in Fig. 5(a).
+(a) (b)
+Figure. 5.(a) The experimental scene; (b) Experimental results of positioning of KILA, TLA and KFLA
+185
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+In Fig. 5(a), 7 red dots are represented as 7 different Wi-Fi APs, and any 3 adjacent ones of them form an approximate equilateral triangle; 30 square spots are represented as RFID tags, most of which are arranged randomly in the experimental scene, and others are deployed at corners; 100 Triangular spots are represented as MOs. We implemented a serial of experiments to compare KILA with the Taylor-based localization algorithm (TLA) and the Kalman filter-based localization algorithm (KFLA). Experiments were implemented with different continuous mean values of noise within [5dB, 100dB] based on RMSE. As shown in Fig. 5(b), KILA, TLA and KFLA all follow the rule, that the bigger the mean value of noise is, the lower the accuracy of positioning will be. If the mean value of noise is in [5dB, 20dB], the performances of positioning of above three algorithms are similar. Compared with TLA and KFLA, the performance of KILA is better if the mean value of noise is in [20dB, 85dB], especially in [35dB, 65dB], mainly benefitting from the singular value judgment, which effectively reduces the influence of accumulated error and the data fusion of Wi-Fi and RFID optimizing the results of positioning further. When the mean value of noise is in [70dB, 85dB], the performances of KILA, TLA and KFLA are all deteriorated, especially TLA. If the mean value of noise is greater than 85dB, even the performance of KILA are deteriorated significantly. This is mainly because the accumulated error of the Kalman filter will reach the empirical threshold of singular value quickly in the complicated indoor space with high mean value of noise, resulting in an “over-optimized phenomenon”. However, KILA still has a higher accuracy of positioning than TLA In short, KILA has the better performance than both of TLA and KFLA if the mean value of noise is less than 85dB. Especially the mean value of noise within the interval [35dB, 65dB], the accuracy of positioning of KILA improves significantly, increased by 16% and 28% than TLA and KFLA respectively. It indicates that KILA has a good performance of positioning in indoor environments with medium mean value of noise. Then, we designed another serial of experiments, letting a MO cross the indoor space with different amplitudes of noise change to test the tracks of the MO sketched by KILA, TLA and KFLA respectively in comparison with the actual moving trajectory of the MO. As shown in Fig. 6(a), if the standard deviation of indoor noise is 1dB, which means that noise changes slightly and the
+experimental scene is stable, the tracks of the MO sketched by KILA, TLA and KFLA is similar to the actual moving trajectory of the MO. As shown in Fig. 6(b), if the standard deviation of indoor noise is improved to 3dB, the tracks of the MO sketched by KILA, TLA and KFLA all deviate from the actual moving trajectory of the MO, since the medium amplitude change of noise makes the indoor localization environment unstable. However, the performance of KILA is still better than TLA and KFLA. The performance of TLA is the worst of the above three algorithms. Fig. 6(c) shows that if the standard deviation of indoor noise is improved to 5dB, the tracks of the MO sketched by KILA, TLA and KFLA all deviate more significantly from the actual moving trajectory of the MO. However, the tracks of sketched by KILA is closest to the actual path of the MO, indicating that KILA has the best positioning stability of these three algorithms even in an awful, unstable localization environment with sudden changes of indoor noise. To sum up, all above experiments shows that KILA has the best stability and accuracy of positioning in all experimental scenes with small, medium or big amplitude of indoor noise change, especially with medium or big amplitude of indoor noise change. Due to the singular value judgment applied in KILA, it can optimize the accumulated error to improve the accuracy and stability of positioning. Certainly, RFID plays an important role in the whole indoor localization process of KILA. The effective communication range of RFID tag is shorter than Wi-Fi AP. Thus, the accuracy of positioning of RFID is not much affected. Furthermore, experimental results proves that the data fusion of Wi-Fi and RFID can help to improve the accuracy of positioning effectively. Finally, we compared the time overheads of KILA, TLA and KFLA. As shown in Fig. 6(d), the time overheads of KILA and KFLA are very close, and each of them is obvious less than the time overhead of TLA. The self-circulating optimization process in the KILA is not complicated, and some computing operations will be skipped according to the singular value judgment, so that it can decrease the computational complexity to certain extent. However, the additional computation from RFID will increase the computational complexity a little bit. By the way, the time complexity of TLA is O(n2), and both KILA and KFLA are O(n).
+(a) (b) (c) (d)
+Figure. 6.(a), (b), (c) Tracks of the MO sketched by KILA, TLA and KFLA respectively in comparison with the actual moving trajectory of MO, as the standard deviation of indoor noise is 1dB, 3dB, 5dB, respectively; (d). Time overheads of KILA, TLA and KFLA
+186
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.
+
+
+VI. CONCLUSIONS
+KFASVJ proposed in this paper is the main component of KILA, which utilizes the iteration of time and status update based on the standard Kalman filter to get the optimal RSSI value to effectively optimize the effect of indoor noises. The singular value judgment mechanism can help to reduce the influence of accumulated error. KILA utilizes the on-demand deployment of APs and the effective data fusion of Wi-Fi and RFID signals to realize more accurate localization in the large, complicated and unstable indoor environment, including the accuracy of positioning, the stability of positioning and the low time complexity. In the future, we will try to solve the following problems to realize the better performance of localization. First, the “over-optimized phenomenon” of KILA needs to be solved. Second, indoor obstacles can bring the multipath effect, which deteriorates the accuracy of positioning [34]. Last, the time overhead of the localization algorithm is lesser, which could reduce the energy consumption of mobile terminals, and the response speed of positioning is faster to provide the better quality of experience.
+ACKNOWLEDGMENT
+We would like to thank the reviewers for their detailed comments to help us improve the quality of this paper. This work was jointly sponsored by the National Natural Science Foundation of China under Grant 61472192 and 71401079, and the Natural Science Fund of Higher Education of Jiangsu Province under Grant 14KJB520014.
+REFERENCES
+[1] K. K. Liu, X. X. Liu, and X. L. Li, “Guoguo: Enabling fine-grained indoor localization via smartphone,” in Proc. 11th Annu. Int. Conf. MobiSys, 2013, pp. 235-248. [2] R. Want, A. Hopper, V. Falcao, and J. Gibbons, “The active badge location system,” ACM Trans. Inf. Sys., vol. 10, no. 3, pp. 91-102, Jan.1992. [3] A. Ward, A. Jones, and A. Hopper, “A new location technique for the active office,” IEEE Pers. Commun., vol. 4, no. 5, pp. 42-47, Oct.1997. [4] N. B. Priyantha, A. Chakraborty, and H. Balakrishnan, “The cricket location-support system,” in Proc. 6th Annu. Int. Conf. MobiCom, 2000, pp. 32-43. [5] R. J. Orr, and G. D. Abowd, “The smart floor: a mechanism for natural user identification and tracking,” in Proc. Conf. CHI, 2000, pp. 275 276. [6] J. Krumm, S. Harris, B. Meyers, B. Brumitt, M. Hale, and S. Shafer, “Multi-camera multi-person tracking for easyliving,” in Proc. 3rd IEEE Int. Workshop Visual Surveillance, 2000, pp. 3-10.
+[7] P. Bahl, and V. N. Padmanabhan, “RADAR: An in-building RF-based user location and tracking system,” in Proc. 19th Annu. Joint Conf. IEEE INFOCOM., 2000, vol. 2, pp. 775-784. [8] Y. Gwon, R. Jain, and T. Kawahara, “Robust indoor location estimation of stationary and mobile users,” in Proc. 23th Annu. Joint Conf. IEEE INFOCOM., 2004, vol. 2, pp. 1032-1043. [9] J. Hightower, R. Want, and G. Borriello, “SpotON: An indoor 3D location sensing technology based on RF signal strength,” Dept. CSE., UW., Seattle, WA. Rep.2000-02-02, Feb. 18, 2000. [10] E. Emilsson, and J. Rydell, “Chameleon on fire – thermal infrared indoor positioning,” in Proc. IEEE/ION PLANS., 2014, pp. 637-644. [11] W. Hawkinson, P. Samanant, R. McCroskey, R. Ingvalson, A. Kulkarni, L. Haas, and B. English, “GLANSER: Geospatial location, accountability, and navigation system for emergency responders
+system concept and performance assessment,” in Proc. IEEE/ION PLANS., 2012, pp. 98-105. [12] A. Cavanaugh, M. Lowe, D. Cyganski, and R. J. Duckworth, “WPI precision personnel locator: inverse synthetic array reconciliation tomography performance,” in Proc. IEEE/ION PLANS., 2012, pp. 1189-1194. [13] G. B. Shen, Z. Chen, P. C. Zhang, M. Thomas, and Y. G. Zhang, “Walkie-markie: indoor pathway mapping made easy,” in Proc. 10th USENIX Conf. NSDI., 2013, pp. 85-98. [14] J. –O. Nilsson, J. Rantakokko, P. Handel, I. Skog, M. Ohlsson, and K. V. S. Hari, “Accurate indoor positioning of firefighters using dual footmounted inertial sensors and inter-agent ranging,” in Proc. IEEE/ION PLANS., 2014, pp. 631-636. [15] S. H. Fang, and T. N. Lin, “Principal component localization in indoor WLAN environments,” IEEE Trans. Mobile Comput., vol. 11, no. 1, pp. 100-110, Jan. 2012. [16] M. E. Rida, L. Fuqiang, Y. Jadi, and A. A. A. Algawhari, A. Askourih, “Indoor Location Position Based on Bluetooth Signal Strength,” in Proc. 2nd Int. Conf. ICISCE., 2015, pp. 769-773.
+[17] E. Jedari, W. Zheng, R. Rashidzadeh, M. Saif, “Wi-Fi based indoor location positioning employing random forest classifier,” in Proc. Int. Conf. IPIN., 2015, pp. 1-5. [18] A. Alonazi, M. Yi, R. Tafazolli, “Less-calibration Wi-Fi-based indoor positioning,” in Proc. Int. Conf. ICC., 2015, pp. 2733-2738. [19] C. Y. Shih, and P. J. Marron, “COLA: complexity-reduced trilateration approach for 3D localization in wireless sensor networks,” in Proc. 4th Int. Conf. SENSORCOMM., 2010, pp. 24-32.
+[20] S. H. Fang, and T. N. Lin, “Cooperative multi-radio localization in heterogeneous wireless networks,” IEEE Trans. Wireless Commun., vol. 9, no. 5, pp. 1547-1551, May. 2010. [21] P. T. Stephen, A. D. Peter, P. D. Robert, and M. Gokhan, “Indoor localization without infrastructure using the acoustic background spectrum,” in Proc. 9th Int. Conf. MobiSys., 2011, pp. 155-168. [22] T. Y. Wu, I. J. Liao, W. T. Lee, G. H. Liaw, J. W. Ding, and C. C. Wu, “Enhancing indoor accuracy of positioning of sensor-based by advance genetic algorithm,” in Proc. 6th Int. Conf. IWCMC., 2010, pp. 12181222. [23] S. H. Fang, and T. N. Lin, “Indoor location system based on discriminant-adaptive neural network in IEEE 802.11 environments,” IEEE Trans. Neural Netw., vol. 19, no. 11, pp. 1973-1978, Nov.2008. [24] G. J. Han, D. Choi, and W. Lim, “Reference node placement and selection algorithm based on trilateration for indoor sensor networks,” J. Wireless Commun. & Mobile Comput., vol. 9, no. 8, pp. 1017-1027, Aug. 2009. [25] H. J. Wang, and Y. L. Tang, “RFID technology applied to monitor vehicle in highway,” in Proc. 3rd Int. Conf. ICDMA., 2012, pp. 736739. [26] A. Athalye, V. Savic, M. Bolic, and P. M. Djuric, “Novel semi-passive RFID system for indoor localization,” IEEE Sensors J., vol. 13, no. 2, pp. 528-537, Feb. 2013. [27] D. A. Savochkin, “Combinational RFID-based localization using different algorithms and measurements,” in Proc. 20th Int. Conf. MIKON., 2014, pp. 1-4. [28] H. Will, T. Hillebrandt, Y. Yang, Y. B. Zhao, and M. Kyas, “The membership degree Min-Max localization algorithm,” in Proc. UPINLBS., 2012, pp. 1-10. [29] A. Hadir, K. Zine-Dine, M. Bakhouya, and J. El Kafi, “An improved DV-Hop localization algorithm for wireless sensor networks,” in Proc. 5th Int. Conf. NGNS., 2014, pp. 330-334.
+[30] G. Cullen, K. Curran, J. Santos, G. Maguire, and D. Bourne, “CAPTURE - Extending the scope of self-localization in Indoor Positioning Systems,” in Proc. Int. Conf. IPIN., 2015, pp. 1-10. [31] R. E. Kalman, “A new approach to linear filtering and prediction problems,” J. Fluids Eng., vol. 82, no. 1, pp. 35-45, Mar. 1960. [32] C. Paleologu, J. Benesty, and S. Ciochina, “Study of the optimal and simplified Kalman filters for echo cancellation,” in Proc. IEEE Int. Conf. ICASSP., 2013, pp. 580-584. [33] Y. B. Zhao, Y. Yang, M. Kyas, “Comparing centralized Kalman filter schemes for indoor positioning in wireless sensor network,” in Proc. Int. Conf. IPIN., 2011, pp. 1-10.
+187
+Authorized licensed use limited to: Texas A M University. Downloaded on June 18,2025 at 02:13:26 UTC from IEEE Xplore. Restrictions apply.

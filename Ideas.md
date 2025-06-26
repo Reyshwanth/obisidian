@@ -1,0 +1,2 @@
+1. Use MDS along with UWB range measurements to get the general shape of whatever it is you're trying to localize. Then once the drones have settled get a snapshot of the ground and match it to the known hd map. again, some scheme on images from the multiple drones and possibly using ground robots without gps signal as a reference anchor point to estimate the lat long from the hd_map.
+2. 

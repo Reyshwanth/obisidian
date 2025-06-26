@@ -1,0 +1,767 @@
+Vol.:(0123456789)
+Wireless Personal Communications (2021) 119:289–327 https://doi.org/10.1007/s11277-021-08209-5
+13
+A Review of Indoor Localization Techniques and Wireless Technologies
+Huthaifa Obeidat1 · Wafa Shuaieb2 · Omar Obeidat3 · Raed Abd‐Alhameed4
+Accepted: 29 January 2021 / Published online: 19 February 2021 © The Author(s) 2021
+Abstract
+This paper introduces a review article on indoor localization techniques and technologies. The paper starts with current localization systems and summarizes comparisons between these systems in terms of accuracy, cost, advantages, and disadvantages. Also, the paper presents different detection techniques and compare them in terms of accuracy and cost. Finally, localization methods and algorithms, including angle of arrival (AOA), time of arrival (TOA), and recived signal strength (RSS) are introduced. The study contains concepts, requirements, and specifications for each category of methods presents pros and cons for investigated methods, and conducts comparisons between them.
+Keywords Acoustic navigation · Angle of arrival · Bluetooth · FM · GPS · Indoor localization · Inertial navigation system · Infrared · Received signal strength · RFID · Time of arrival · Ultrasonic navigation · Wi-fi · Zigbee
+1 Introduction
+With the emerge of the Internet of things (IoT), localization within indoor environments like supermarkets, airports, train stations, and hospitals becomes inevitable [1, 2]. In supermarkets, a customer can select a cart which is equipped with a personal digital assistant (PDA) screen and radio-frequency identification (RFID) tags, the cart’s location is identified through hybrid Wi-Fi and RFID system, if the customer wants to find the place of a product, he can search through the PDA screen, and directions towards the target are given [3]. In museums and galleries, rather than providing brochures to visitors, nomadic tourists can be handled by a device that operates on Bluetooth and Wi-Fi. The device can give direction toward a specific part of the gallery and support information about a piece of art. It can also tell tourists if congestion is in a particular place to save time and explore
+* Huthaifa Obeidat h.obeidat@jpu.edu.jo
+1 Faculty of Engineering, Jerash University, Jerash, Jordan
+2 Faculty of Engineering, Omar Al-Mukhtar University, Al Bayda, Libya
+3 College of Engineering, Wayne State University, Detroit, USA
+4 Faculty of Engineering and Informatics, University of Bradford, Bradford, UK
+
+
+290 H. Obeidat et al.
+13
+something else [4]. Similarly, exhibitions have many visitors daily; for example, in 2019, the DreamWorks exhibition was held in Reo De Janeiro from 6-Feb till 15-April with 11,380 visitors daily [5]. Students can be guided in libraries to books’ locations using Bluetooth beacons. The student can download a mobile application that will relate his coordinates to the network and recommend him. The localization accuracy is in several meters, guaranteeing that the student will be close to the required shelf books [6]. It’s vital in hospitals to monitor some patients’ movements, especially those who suffer from mental diseases like Alzheimer’s; this can be accomplished by utilizing RFID technology [7]. Additionally, RFID tags can be placed on different parts of the body; this can tell the patients who require home-healthcare whether they are sitting, sleeping, walking, standing, or collapsing, which requires close attention and quick response [8]. Firefighters may need to get into a burning building. As a result, one or more may be trapped or fall unconscious; therefore, their location should be inferred all the time. A possible way by mounting dual-shoe integrated inertial sensors and inter-agent ranging sensors; the firefighter place can be concluded within the building and how far he is from the other team members [9, 10]. Additionally, fire detection systems can be incorporated with ZigBee based sensor networks to localize the fire’s source [11]. For military applications, friendly and hostile entries can be detected, cameras/ acoustic systems can be used to detect humans within highly secure places [12]. Also, robots are used to accomplish missions that may lead to human causality or can’t be achieved by soldiers [13]. The article structure is as follows: a review on localization systems technologies is presented in Sect. 2, a study on localization detection techniques is conducted in Sect. 3, while Sect. 4 offers localization methods and algorithms. And finally, conclusions are drawn.
+2 Localization systems technologies
+2.1 Satellite‐Based Navigation
+The global positioning system (GPS) is the most popular system for outdoor localization. However, it requires line-of-sight (LOS) between the satellites and the handset. Thus, and due to building external walls, it becomes inefficient for indoor location-based services [14]. The GPS can be utilized by using a steerable, high gain directional antenna as the front-end of a GPS receiver [14]. In places where GPS signals cannot be reached, pseudolites (i.e., pseudo satellite) are used as independent localization systems; these systems are composed of pseudolites, transmission and receiver antennas, target receivers, and reference [15]. The central concept is to receive the GPS signal and repeat it through indoor transmitters [16].
+2.2 Inertial Navigation System
+Inertial navigation system (INS) employs inertial measuring units (IMU) such as accelerometer and gyroscope for defining the location and directional movement of the objects to an initial location, velocity, and angle [17]. INS is distinguished with accuracy, energy efficiency [18] provided that the inertial sensor must be attached to the object’s surface. However, INS may become exposed to errors requiring the need to implement sophisticated filtering approaches like Kalman filter [19]. Another drawback of using the INS is
+
+
+291
+A Review of Indoor Localization Techniques and Wireless...
+13
+the cost and effort needed to deploy the network infrastructure of the location sensor [20]. In [21], a novel initial location estimation scheme is presented by combining existing WiFi routers and iBeacons. iBILL was proposed in [22]; it combines iBeacons and inertial sensors; the system has modes: iBeacon localization mode and particle filter localization (PFL) mode. iBeacons is used to let PFL cope with magnetic field fluctuations, therefore no accumulating errors with walking, and reduce the computational overhead of PFL. iBILL was compared to Magicol (a system fuse geomagnetism and inertial sensors) and dead reckoning (DR). It was observed that iBILL suppresses errors from increasing with walking distance and has better performance. In [23], a hybrid localization scheme consists of inertial sensor-based dead reckoning with acoustic localization; the scheme is then fused with Kalman filter. It was found that the proposed systems outperform the stand-alone systems and overcome their drawbacks. In [24], a hybrid scheme is presented that combines Wi-Fi fingerprinting with inertial sensors; the proposed method performs better than individual techniques.
+2.3 Magnetic Based Navigation
+Magnetic based technology is utilized for localization at low frequency. At least three reference magnetic stations are radiating magnetic field, a magnetic sensor receives the radiated fields, and the sensor’s location is estimated by trilateration. This technology is accurate at low frequencies; however, it’s sensitive to conductive and ferromagnetic materials [25]. Usually, magnetic-based navigation systems depend on the Earth’s magnetic field disturbances within indoor environments; these disturbances occurred due to the ferromagnetic nature of metal structures within buildings [26]. Therefore, by recording the magnetic field at known locations, magnetic maps are constructed; these maps can infer an unknown target’s location depending on its magnetic field measurement. This approach is called magnetic fingerprinting [27, 28]. However, magnetic interference could be significant and cause localization errors [29]. Using different handsets over the same routes may also record different magnetic measurements, making using handsets for localization questionable [26]. In [30], the authors examined localization using deep learning; in their work, accuracy was found to be 0.8 m in corridors and 2.3 m in the atrium. The use of magnetic only localization systems in large areas makes it possible to have large magnetic field fluctuations [22]. Hybrid techniques have been examined to improve accuracy; for example, in [31], a hybrid technique that utilizes a magnetic sensor and inertial sensor in localization allows the user to use the smartphone without restriction during localization with accuracy around 1–2.8 m. Cameras and magnetic fields are merged with neural networks to improve localization provided that the cell phone is at an upright position; their proposed method achieved more than 91% accuracy of 1.34 m [32].
+2.4 Sound‐Based Technologies
+Sound waves have a lower velocity than electromagnetic waves; this makes time synchronization easier, which is a significant concern. Humans can hear within 20 Hz to 20 kHz range; localization using sound can be classified as ultrasonic and acoustic-based navigation systems.
+
+
+292 H. Obeidat et al.
+13
+2.4.1 Ultrasonic Based Navigation Systems
+The acoustic method sounds to be the first localization approach since the Stone Age; nowadays, ultrasound is utilized to incorporate existing mobile devices for localization [33]. Ultrasonic localization is eminent within short ranges due to its low-power penetrating losses through indoor walls, cheap components, and its compatibility with handled devices. On the other hand, [34, 35], localization errors are introduced due to many factors, including multiple reflections from surfaces and synchronization problems between communicating nodes. Ultrasonic localization systems suffer from complex signal processing algorithms [20]. Compared to Ultra-Wideband (UWB) systems, ultrasonic localization systems can tolerate better with low time synchronization [36]. In [37], the authors proposed a localization method based on flight time using a single transceiver; localization median error was 15 cm. The location of ultrasonic nodes should be determined before localization To have accurate results [38].
+2.4.2 Acoustic Based Navigation Systems
+The technology utilized the build-in microphones in smartphones. The microphones capture the source’s sound, which will be used to identify the location with respect to a reference [39, 40]. All smartphones have microphones, while malls, airports, and hospitals have their speakers and microphones, making this technique cost-effective [40, 41]. The transmitted modulated acoustic signal contains information like the time stamp; this will be used to estimate TOF and hence find the target’s location using multi-lateration. To avoid annoying people, transmitted power should be low; this requires sophisticated signal processing for detectors to detect the low power transmitted signal.
+2.5 Optical Based Navigation
+Although the optical signals are a form of EM spectrum, however, since the techniques and challenges are quite different, it would be better to dedicate a section for reviewing localization systems based on optical signals. In this section, we introduced two technologies, namely: infrared technology and visible light technology.
+2.5.1 Infrared Technology
+Infrared (IR) systems are applied in Line of Sight (LOS) scenarios where handsets already have sensors like photodiodes. IR is featured for its simplicity, low weight, compact size, and immunity to interference (unlike RF systems) [42, 43]. However, it suffers from fluorescent light and sunlight interference; also, the hardware of these systems are expensive and costly when performing maintenance [42]. IR systems are composed of IR emitting devices (e.g., LED) and IR sensors (e.g., photodiode). The target wears the IR emitting device; this device emits a signal with a unique identifier; the target’s location is identified once the sensors detect the IR signal. The Active Badge is an example of commercial IR based technologies. In [44], pyroelectric infrared (PIR) sensors are used to detect heat radiation changes emitted from people and
+
+
+293
+A Review of Indoor Localization Techniques and Wireless...
+13
+animals; accuracy is found to be in terms of centimeters; however, they are vulnerable to environmental changes [45].
+2.5.2 Visible Light Communications
+Visible Light Communications (VLC) can be used in RF sensitive places like hospitals [46]; it has been shown that VLC provides a higher accuracy compared to Wi-Fi systems [47]. With the merge of light-emitting diodes (LED), VLC is widely employed in localization; LED has many advantages, including long-life expectancy, immunity to humidity, low power consumption, and low cost [46]. Also, LED can modulate lightwave signals at high speed [20]. General, light bulbs send coded transmitted light; at the receiver, the sensor compares the detected light with the existing database, which links coded light to the position. And the sensor location inferred. Localization using VCL can be performed using photodiode based systems which capture the light intensity and image sensor-based systems which can capture light pulses [48]. While photodiode based systems are inexpensive, mobile is equipped with a camera but not photodiode; this makes image sensor-based systems more preferable. However, both LED and sensors should be in light of sight for accurate localization. AOA is used in visible light systems to ensure precise localization [49]. Light Detection and Ranging localization (LIDAR) provides surrounding obstacles’ contour information; with inertial sensors, these systems can provide accurate localization [50].
+2.6 Radio Frequency (RF) Based Navigation
+Radio Frequency (RF) based systems are the most adopted systems for localization. It is promoted as it covers a wider area with low-cost hardware required [51]. This is illustrated because the RF waves can penetrate materials like walls and human bodies. Compared with other localization systems like IR and ultrasonic based navigations, RF-based systems tend to show better results. However, these systems should be avoided in hospitals and planes as they may interfere with existing RF systems. The Wireless Technologies used for indoor localization can be categorized depending on the different radio frequency it operates since the radio frequency is less than 300 GHz in the radio spectrum [42]. At the same time, the frequency of wireless technology influences its abilities like coverage, wall penetration, and resistance to obstacles. Thus for different applications, there are three categories of wireless technologies used for locationbased applications, i.e., long-distance wireless technology, middle distance, short distance wireless technology [51]. Factors including complexity, accuracy, and environment play an essential role in determining the type of distance measurement system applied for a particular use [52–54]. Nodes’ position information in a Wireless Sensor Network (WSN) has become vital for many features like routing, clustering, and context-based applications. WSN is defined as a network of devices called nodes, these nodes sense the environment’s fields (like temperature, humidity, and luminosity) and communicate the collected information wirelessly [55]. These information are forwarded to sink node deployed for data collection. Examples include: indoor fire control, smart homes, and recue tasks [56]. WSN has been developed based on IEEE 802.15.4 in wireless personal area network (WPAN). WSN localization
+
+
+294 H. Obeidat et al.
+13
+is the process of localizing the target using a network of wireless sensors [57, 58]. The knowledge of nodes’ location in WSN is important, since measurements without location information becomes useless. An example of localization in WSN is by using RSSI based on ZigBee standard [59]. WSN for localization can use both range-based (depends on internode measurements) and free-range based localization [60, 61]. It can be further divided into exact (lateration, trilateration) and approximate types (proximity and scene analysis). In [62], fire fighters use suites that are equipped with five sensors to measure blood pressure, core temperature, heart rate, O2 oximeter, heat flux and wind speed, these data
+are send constantly to the team leader to check members’ status. Similar project was proposed by [63], where in case of fires, victims can be tracked, also, save paths to exits can be found. By using the ultrasonic waves which is not affected by smoke, ashes and fire flames, firefighter’s status within buildings can be inferred. If the location is estimated by one computer, the localization system is centralized, if the nodes are able to estimate the target location, the localization system is distributed [64]. Examples on RF based navigation systems include: WiFi [65], Bluetooth [66], Zigbee [67], Ultra-Wideband (UWB) [68] and Radio Frequency Identification (RFID) [42]. This section will provide short descriptions of these technologies.
+2.6.1 Frequency Modulation Technology
+Frequency modulation (FM) broadcasting can be used for localization for outdoor environments and indoor environments recently [69]. FM operates at 88–108 MHz, which is lower than cellular networks (operates at 0.9 and 1.8 GHz) and Wi-Fi (2.45 GHz). Therefore, FM radio signals are less affected by weather conditions, less sensitive to terrain conditions, and can penetrate walls more comfortable [70]. As it has a larger wavelength (3 m), the interaction with indoor objects and furniture is different from that at Wi-Fi frequencies. Operating at FM frequencies does not interfere with other RF components that operate at 2.4 GHz [71]. Also, FM receivers consume less power. RSS is used for indoor localization by using the fingerprinting technique; in [72], fingerprinting performance was compared using different machine learning methods, k nearest neighbor (kNN), support vector machine (SVM) classifiers, and Gaussian processes (GP) regression. It was found that the kNN approach achieved the best results. Also, for better accuracy, it was recommended to choose stations with stronger signals. FM performance was compared to Wi-Fi. It was found that Wi-Fi has the best localization performance over large spaces like floors, while FM tends to have the best performance over small places, like rooms.
+2.6.2 Cellular Based Technology
+Cellular networks operate on many frequency bands, including the 0.9 GHz, 1.8, and 2.8 GHz bands. These networks provide better coverage compared to Wi-Fi networks and require no additional infrastructure. Initially, proximity was used for localization, where the mobile location is identified within the cell coverage range; this approach provides extremely low results [73]. Localization is performed usually using RSS, in which the fingerprinting technique is the adopted one. Other researchers consider using TOA, where trilateration is the adopted localization technique. In the case of using RSS fingerprinting, cell stations are regarded as the APs; the accuracy was found to be in the range of 2.5–5.4 m [74].
+
+
+295
+A Review of Indoor Localization Techniques and Wireless...
+13
+In [75], localization was performed using RSS fingerprinting using the Global System for Mobile Communications (GSM) received signals. Fingerprints were collected from 29 GSM channels and 6 cells in their work. Localization error was less than 5 m, similar outcomes achieved by [76]. Universal Mobile Telecommunications Service (UMTS) cell for indoor coverage was used for localization by taking fingerprints. In [68], measurements were taken in an office environment. It was found that localization using UMTS small cells is comparable to WLAN in terms of accuracy. Also, Long-Term Evolution (LTE) was utilized for indoor environment, in [77] authors conducted localization using TOA; in their work, the error was less than 8 m for 50% of cases. LTE could be fused with an inertial measurement unit as in [78], where root mean square error (RMSE) was around 3.52 m. In [79], synthetic aperture navigation (SAN) framework was used to mitigate the effect of multipath signals; a synthetic aperture antenna will capture signals at different time instants. This would be similar to catching the signals from an array. SAN will use the Estimation of Signal Parameters via Rotational Invariance Technique (ESPRIT) algorithm to find DOA to determine the position; in their work, the RMSE of localization was 3.9 m for LTE-SAN compared to 7.19 m for standalone LTE. In [80], a study on localization using LTE-only and LTE-WLAN fingerprinting was conducted; it was found that LTE-only fingerprinting gives poor results while using LTEWLAN fingerprinting enhanced the performance by order of 3.5x. Cellular systems can be used to support other existing RF localization systems like RFID [81], Wi-Fi [82–84],
+2.6.3 Wi‐Fi Technology
+Wi-Fi is the name of popular wireless networking technology. Wi-Fi operates within the RF bands of 2.5 GHz for IEEE 802.11b, IEEE 802.11 g, and IEEE802.11n, and in 5 GHz for IEEE 802.11a. A most massive indoor environment such as a university or an office building has already distributed WiFi hotspots that provide whole-building coverage as a network access point. Devices that employ Wi-Fi technology include personal computers, video-game consoles, smartphones, digital cameras, tablet computers, and digital audio players [85, 86]. That the infrastructure cost and user device cost for Wi-Fi can be very low, and Wi-Fi has covered a reception range of about 100 m and has now increased to about 1 km (km). Additionally, Wi-Fi localization based on fingerprinting RSS (Received Signal Strength) [87, 88]. Wi-Fi could be used with other RF localization techniques, like RFID [89]. Wi-Fi covers wider areas than Bluetooth and provides higher throughput; this makes the utilization of Wi-Fi more practical [90]. Examples of commercial Wi-Fi-based positioning systems include RADAR, HORUS, COMPASS, HERECAST, and PlaceLab [88, 91].
+2.6.4 ZigBee
+ZigBee is a specification based on IEEE 802.15.4 standard. It uses the 868 MHz band in Europe, 915 MHz bands in the USA and Australia, and 2.4 GHz in other regions. ZigBee is used for long-distance transmission between devices in a wireless mesh network. It has low cost, low data transfer rate, short latency time, comparing to WiFi standards. The technology uses the RSS method to estimate the distance between two or more ZigBee sensor devices [92, 93]. Access point (AP) scanning via the WiFi interface leads to high power consumption. To reduce this effect, authors in [94] introduced an energy-efficient indoor localization using ZigBee termed as ZIL, in which the ZigBee interface is used to collect Wi-Fi signals. In [95],
+
+
+296 H. Obeidat et al.
+13
+a ZigBee localization algorithm based on proximity learning was introduced; the proposed method differs from other traditional triangulation based techniques as it reduces computational time while maintaining accurate positioning.
+2.6.5 Bluetooth
+Bluetooth (IEEE 802.15.1) is intended to enable short-range wireless communication between devices. Bluetooth communicates utilized radio waves with frequencies between 2.402 GHz and 2.480 GHz as Wi-Fi does. If features with cost-effectiveness, low transmission power, battery life, secure and efficient communications, and accessible solutions [96, 97]. The new Bluetooth version termed Bluetooth Low Energy (BLE) can cover a range of 70–100 m and provide 24 Mbps with higher power efficiency [98]. Hence, Bluetooth is not suitable for localization for the large area [66]. In [97], neural networks (NN) are trained using the received signal strength values and their corresponding coordinates in the training phase; once they got trained NN, they can be used to detect user location based on the online RSS measurements. Recently, BLE based localization is utilized in smartphones as iBeacons (Apple) and Eddystone (Google), the smartphone can be used for localization within airports, train stations, big markets, malls and restaurants, where the area map is sent to the smartphone and then localization is performed using the BLE [98].
+2.6.6 Ultra‐Wide Band
+According to the U.S. Federal Communications Commission (FCC), a UWB signal has absolute bandwidth more than 500 MHz and carrier frequency larger than 2.5 GHz [99]. Using low power consumption in UWB achieves a large bandwidth, high-speed communication, high time resolution, high data rate, and short-wavelength, making UWB stronger against multipath interference and fading. Another useful property of UWB is that it is permitted to occupy low carrier frequencies, where signals can more easily pass through obstacles; UWB is also immune to interference since it has a significantly different spectrum [100]. All those characteristics guarantee UWB a good candidate for indoor wireless positioning. TOA and time difference of arrival (TDOA) have higher accuracy than other localization algorithms because of the high time resolution of the UWB signals, where the multipath effect is minimized. UWB can minimize error to centimetres [68, 101]. In [102], the authors proposed a hybrid localization using Wi-Fi and UWB; this is accomplished by adding UWB beacons to existing Wi-Fi infrastructure. The hybrid method combines the availability of Wi-Fi infrastructure, which will reduce cost and the accuracy of UWB when deploying their algorithm; localization error was limited to 20 cm. Typical UWB systems can localize a limited number of tags; in [103], a UWB localization system called SnapLoc can localize an unlimited number of tags. In [104], UWB localization system performance was analyzed for LOS and NLOS scenarios. The position was estimated using linearized least square estimation (LLSE), fingerprint estimation (FPE), and weighted centroid estimation (WCE); in their work, it was found that FPE shows the best performance, while LLSE shows the worst.
+2.6.7 Radio Frequency Identification (RFID)
+Radio Frequency Identification (RFID) systems operate on RFID tags’ backscattering communication and RFID readers and middleware for processing the signal generated between the tags and the readers [105].
+
+
+297
+A Review of Indoor Localization Techniques and Wireless...
+13
+RFID tags are either active, passive, or semi-active. Active tags are equipped with an inbuilt battery embedded in their circuitry. Active RFIDs operate in the ultra-high frequency (UHF) and super high frequency (SHF) range with a detection range of up to 100 m. Thus, active RFID is useful for long-range localization and object tracking [106–108]. However, active RFID technology is not reliable for sub-meter localization accuracy, and it is not readily available on most portable user devices. Passive tags do not have inbuilt batteries but backscatter the signal received from the base station. Passive RFID is readily used for various applications due to its numerous benefits, including cheap cost, miniaturized size, ease of manufacturing compared to active RFID since it only requires a tag chip and antenna. Passive RFID is useful for sub-meter detections and can detect targets in up to 10 m range [108]. Radio Frequency Identification (RFID) technologies are viral due to their low cost. In such technologies, many reference tags are deployed in advance. Each tag will act as the transmitter, and the Radio Signal Strength Indicator (RSSI) information is measured from the readers around. The target tag’s position is then estimated by those reference tags whose RSSI information is closest to the target tag’s RSSI information [109, 110]. In [111], authors conducted localization using three types of sensors pairs, including infrared sensor pair, RFID reader and tags, and light-emitting diode LED and light resistor. It was found that localization using RFID outperforms other sensors in terms of accuracy and stability. Table 1 summarizes the characteristics of the localization technologies used nowadays [46, 98, 112–116].
+3 Localization Detection Techniques
+3.1 Proximity Based Technique
+(Also called relative positioning/connectivity) have been suggested as a cheap and straightforward means to estimate the range between mobile and AP location. The proximity approach does not matter if the mobile and the AP are exposed to the same fading channel or not, as long as they are within the communication range [117]. The location for the mobile is estimated using the coordinates of the AP. The proximity approach is simple and widely used; however, accuracy is limited to AP radio coverage [118]. Generally, there are three proximity methods, including sensing physical contact, where sensors like pressure sensors, touch sensors, and capacitive field detectors are used to feel physical contact. The second approach includes observing the wireless signal of mobile within the access points range. Finally, it observes automatic ID systems, like credit card payment terminals [119].
+3.2 Scene Analysis
+In scene analysis, videos, virtual images, or electromagnetic characteristics of the target are recorded and compared to the existing dataset, which will help the target received the feature to be mapped to a location [120, 121]. For example, wearable cameras are used to capture virtual images and link them with the target’s location. Wireless signal characteristics at defined locations can be used to create a radiomap, which can infer the mobile’s location by mapping the mobile’s signal data to the map. This is renowned as fingerprinting. This type of localization is famous for its simplicity; however, it requires collecting a sufficient
+
+
+298 H. Obeidat et al.
+13
+Table 1 Localization technologies performance overview
+Technology Technique Method Accuracy (m) Cost Coverage Pros Cons
+Satellite Trilateration TOA
+TDOA
+3–5 Floor level Low power consumption
+Inertial Dead Reckoning – 2 Low Floor level Cheap Accumulative errors
+Magnetic Based Trilateration
+Fingerprinting
+– 2 Low Floor level Cheap Requires mapping
+Ultrasonic Based Trilateration TOA
+TDOA
+0.01–1 Medium–High Room level Good accuracy
+No effect of multipath
+Interference
+Cost for hardware
+Acoustic Trilateration TOA meters Low Room level Cheap Poor accuracy
+Infrared Proximity
+Trilateration
+TOA 1–2 Medium Room level (few meters) Cheap
+No effect of multipath
+Low power consumption
+Sunlight interference
+Short-range
+Cost for hardware
+Visible light Angulation AOA 0.1 Medium Floor level No interfering Expensive construction
+Wi-Fi Proximity
+Trilateration
+Angulation
+Fingerprinting
+RSS-Propagation model
+AP ID
+RSS
+TOA
+TDOA
+AOA
+10 (proximity)
+1–5
+Low Floor level (around 35) Good accuracy
+Low cost
+Wi-Fi signals can penetrate
+walls/
+No need for additional
+infrastructure
+RF interference with devices
+operating at 2.4 GHz
+Fingerprinting requires a
+huge effort
+ZigBee Proximity
+Trilateration
+Fingerprinting
+RSS-Propagation model
+AP ID
+RSS
+3–5 Medium Floor level Low cost
+Low power consumption
+Requires special equipment
+Bluetooth Proximity
+Trilateration
+Fingerprinting
+AP ID
+RSS
+TOA
+2–5 Low-Medium around 10 Good accuracy
+No need for additional
+infrastructure
+Low power consumption
+RF interference
+Limited coverage and
+mobility
+
+
+299
+A Review of Indoor Localization Techniques and Wireless...
+13
+Table 1 (continued)
+Technology Technique Method Accuracy (m) Cost Coverage Pros Cons
+UWB Trilateration
+Angulation
+TOA
+TDOA
+RSS
+AOA
+0.01–1 High Few meters Accurate Expensive
+Coverage is limited
+Performance degrades in
+NLOS
+RFID Proximity
+Trilateration
+Fingerprinting
+RSS-Propagation model
+AP ID
+RSS
+1–5 Low Room level Cheap
+Real-time localization
+Low accuracy
+Response time is high
+FM Fingerprinting RSS 2–4 Low 100 km Low sensitivity to objects Vast change of signal over a
+small distance
+Cellular network Fingerprinting
+Proximity
+Trilateration
+RSS
+TOA
+2.5–25 Low 80 km Networks available all over
+areas
+Low accuracy
+
+
+300 H. Obeidat et al.
+13
+amount of data, also [122], changing the environment may lead to change the features characteristics which necessitate updating the dataset [119].
+3.3 Triangulation
+In triangulation, the target location can be determined by forming triangles from known points to the target. It has two categories: lateration and angulation. Lateration is a distance-based technique, which is used in Time of Arrival (TOA), and Received Signal Strength (RSS), while angulation is a direction-based technique that is used in Angle of Arrival (AOA) approach.
+3.3.1 Lateration
+The distance between AP and mobile is related to the received power/ time of travel; this relationship can be represented in a mathematical expression. For 2D measurements, with two equations, there will be two possible solutions. To have a unique solution, three equations are required; the intersection of these equations will determine the location of the mobile as shown in Fig. 1; if the problem is in 3D (x, y, z) then four APs are used at least to have a unique solution [123]. Lateration is also used for estimating location through differential measurements (receive signal strength/ time of arrival). Differential measurements are used to reduce the effects of environmental changes. In this case, the transmitted power is unknown (DRSS) or if the time of transmission of the access point is unknown (TDOA), [124– 126]
+Fig. 1 Trilateration localization
+
+
+301
+A Review of Indoor Localization Techniques and Wireless...
+13
+Generally, if m APs are collaborating in localization, there will be (m(m−1)
+2 ) formulated
+differential equations, among these equations (m − 1) are basic equations, while the rest are redundant, the solution of each basic equation will lie on a hyperbola, the intersection of these hyperbolas gives the mobile’s coordinates [127]. Using 3 APs system, there will be two basic equations, while the third equation is a linear combination of the basic ones. Three basic equations are required to have a unique solution, which is achieved by adding another AP, as shown in Fig. 2. Therefore, for 2D localization, 4 APs are required.
+3.3.2 Angulation
+For 2D measurements, two angle measurements and single range measurement are required to localize an object as seen in Fig. 3; the range measurement could be the distance between the two arrays. For 3D measurements, two angle measurements, single azimuth measurement, and single range measurement are required [119].
+Fig. 2 Hyperbolic localization using DRSS
+Fig. 3 Angulation using two known angles and known distance
+
+
+302 H. Obeidat et al.
+13
+3.4 Dead Reckoning (DR)
+DR technique relies on inertial measurement unit sensors; the sensor can track target movement by the equipped accelerometers, gyroscopes, and magnetometers [128]. Knowing the target’s velocity at a known location, the position is updated by adding the estimated displacement to the previously estimated location [129]. Its simplicity distinguishes this technique. However, it requires an accurate initial position to avoid errors, even though, since there are no external reference signals is used for correction, errors are accumulated over time [130]. Hybrid techniques are used to have more accurate results [129–131]. In [132], localization was performed using pedestrian DR (PDR), Wi-Fi fingerprinting; it was found that PDR has the worst performance while making a hybrid of PDR, and Wi-Fi gives the best performance. Table 2 summarizes the localization detection techniques; the summary includes a comparison between these techniques, including the accuracy, measurement type, and cost [42, 114, 133, 115].
+4 Localization methods and algorithms
+4.1 Angle of Arrival Measurements
+Antenna arrays are used to detect arrivals’ angle; the direction of arrival (DOA) is used for many applications, including beamforming and localization [133]. DOA requires the use of antenna arrays, which makes the technique more expensive and more power consumption than TOA and RSS [134]; however, it requires less equipment as only two APs are needed to infer mobile’s location [135]. In the following discussion, it worth explaining the meanings for the used symbols, as shown in Table 3.
+4.1.1 Classic Beamformer (Bartlett Beamformer)
+The Bartlett method is considered to be one of the earliest AOA estimation techniques; during the process of making the array manifold, the covariance matrix is implemented;
+accordingly, the output power of the beamformer is estimated, maximum peaks of P(θ) correspond to AOA [136, 137].
+where y[n] is the array output, x[n] is the array input data vector, R is the covariance matrix, and w is the weighting vector. For the uniform linear array (ULA) [138], where K is the number of antenna elements:
+The drawback of using the Bartlett beamformer is the low resolution as it appears when the impinging signals are very close [138]. The separation between the electrical angles
+φ (equals to kdcos(θ)) should be more than (2π/K), adding more elements with suitable design will compensate for these impairments; however, this will add more the cost, size and storage data for calibration [138].
+(1)
+P(θ) = E y[n] 2 = max E wHx[n]x[n]Hw = max E wHR w = wHR w
+wH w
+(2)
+PBAR(θ) = wHR w
+K2
+
+
+303
+A Review of Indoor Localization Techniques and Wireless...
+13
+Table 2 Localization detection techniques comparison
+Technique Accuracy Measurement type Cost Notes
+Proximity Medium RSS Low Adding more AP will increase accuracy and cost
+Accuracy is specified by AP cell size
+Not affected by the multipath effect
+No need for extra hardware
+Fingerprinting High RSS Low Requires massive work to construct a radio map
+Adding/removing AP will require to update the radio map
+Not affected by the multipath effect
+No need for extra hardware
+Time High TOA High Suffer from multipath
+AP location should be identified
+Direction Medium AOA High Suffer from multipath
+Requires array antennas with specific angular properties
+AP location should be identified
+Dead Reckoning Low-Medium Velocity
+Acceleration
+Low Suffers from accumulative errors
+
+
+304 H. Obeidat et al.
+13
+4.1.2 Capon Minimum Variance Method
+The Capon method uses some of the degrees of freedom to look at the desired signal θ0 and use the remaining to suppress the interfering signals [136]; in other words, the algorithm
+has two constraints, minimize the power from noise and interferer signals wH.n[n] and keeping the gain of the desired signal constant wH.a(θ0) ≅ 1 [136] where a θ0 is the
+steering vector of the estimated angle of arrival θ0. Mathematically array weighting is estimated by [138]:
+The weighting vector can be estimated using the Lagrange multiplier method:
+Applying in Eq. 4, the total power received is:
+This method shows better performance than the Bartlett beamformer as it can distinguish between angles with small separation, and it also suppresses the side lobes levels. One drawback of the Capon method is the expensive calculation for the inverse matrix for large antenna arrays [139]. The Capon beamformer shows acceptable performance in terms of resolution and rejection of interference under the condition that the presumed steering
+(3)
+mwin wH.R.w subject to wH.a ̂θ0 = 1
+(4)
+w = R−1a ̂θ0
+aH ̂θ0 R−1a ̂θ0
+(5)
+PCAP(θ) = 1
+aH ̂θ0 R−1a ̂θ0
+Table 3 Notations used for AOA
+techniques discussion Symbol Meaning K Number of antenna elements M Number of arrival signals d Distance between antenna elements R Spatial covariance matrix P Source covariance matrix y[n] Array output x[n] Array input data vector w Weighting vector W Weighting matrix R Estimate of R θ
+0 Desired angle a(θ0) Steering vector A(θ0) Steering matrix Un Noise subspace Us Signal subspace Λ Diagonal matrix of eigenvalues Φ Diagonal matrix with ejφm, m = 1...M φ Electrical angle
+
+
+305
+A Review of Indoor Localization Techniques and Wireless...
+13
+vector of the desired signal is identical to the actual one. However, practically, it is difficult to let the most accurate steering vector similar to the actual one; thus, the performance degrades dramatically [140].
+4.1.3 The MUSIC Algorithm
+The MUSIC algorithm focus on the eigenvector decomposition of the covariance matrix [141]. The array will scan all possible angles; for an arbitrary steering vector, a projection on signal subspace and projection on noise subspace will be projected. If the steering vector corresponding angle is close to the actual arrival angle, then the steering’s projection on the noise subspace will be almost zero [141]. Dividing by zero will give infinite; however, since the steering vector corresponding will not be precisely the actual arrival angle, the division result will be enormous value rather than infinite.
+where Un is the noise subspace. MUSIC is preferred for different reasons, including its ability to measure more than one signal simultaneously [138], in addition to its highly accurate and precise estimation for closed separated signals; however, the algorithm requires the knowledge of the number of incoming signals [138]. MUSIC is sensitive to coherent signals (the same signal is produced from different locations or the multipath of a signal transmitted from a single loca
+tion); in such a case, UH
+n a(θ) ≠ 0, and hence it become very difficult to detect peaks, this obstacle can be overcome by using spatial smoothing.
+4.1.4 Weighted MUSIC Algorithm
+Modification on MUSIC algorithm was proposed to overcome the shorting of the algorithm,
+where W is a weighting matrix, for W = I, this will retrieve the original MUSIC.
+4.1.5 Min‐Norm Algorithm
+If W is chosen as:
+where e1 the first column of the K × K identity matrix, since the weight is of a minimum norm, has its first element equal to unity, and is contained in the noise subspace. This modification is known as the Min-Norm algorithm. Min-Norm shows less bias and, therefore, provides better results than the MUSIC. However, it’s applied to ULA only.
+(6)
+PMU = 1
+aH (θ)Un UH
+n a(θ)
+(7)
+PWM = 1
+aH (θ)Un UH
+n WUnUH
+n a(θ)
+(8)
+W = e1eT
+1
+
+
+306 H. Obeidat et al.
+13
+4.1.6 Root‐MUSIC Algorithm
+It is a polynomial rooting version of MUSIC, which applies only to ULA. The algorithm enhances performance and reduces computational time; it is based on setting up roots of a polynomial, the M-zeros (zm), which lies on the unit circle with the largest phases magnitude yields the AOA estimate.
+where M is the number of arrival signals, and m ranges from 1:M.
+4.1.7 The ESPRIT Algorithm
+The Estimation of Signal Parameters via Rotational Invariance Technique (ESPRIT) is featured with being simple, fast, robust, and power and memory-efficient [142]. The method can detect the direction of multiple incident signals at the antenna array, similar to MUSIC; the ESPRIT uses the eigenvalues to determine DOA and their corresponding delays [143]. The algorithm does search for all possible direction vectors to estimate DOA. Therefore, it reduced computational time and memory usage [144]. The steering matrix can be viewed as [138]:
+A2 is related to A1 by Φ, which is a diagonal matrix:
+The method relies on properties of Eigen decomposition:
+where T = PAHUs Λs − σ2I −1 U2 is related to U1 by Ψ, which is a diagonal matrix:
+Rearranging the equations:
+The above equation can be solved using Least-Squares sense (LS-ESPRIT) or by the TotalLeast-Squares method (TLS-ESPRIT) [138]. Both Ψ and Φ share the same eigenvalues. The
+DOA is estimated by estimating the M-eigenvalues (ξ) of Ψ [145]:
+where m = 1 ∶ M.
+(9)
+̂θm = cos−1 1
+kd arg ̂zm
+(10)
+A = A1
+lastrow = Firstrow
+A2
+(11)
+A2 = A1Φ
+(12)
+Us = U1
+U2
+= A1T
+A1ΦT
+(13)
+U2 = U1Ψ
+(14)
+Ψ = T−1ΦT
+(15)
+̂θm = sin−1 1
+kd arg ̂ξm
+
+
+307
+A Review of Indoor Localization Techniques and Wireless...
+13
+4.1.8 Weighted Subspace Fitting (WSF)
+It is an asymptotically efficient parametric method that applies to any arbitrary array structure [146]; the weighting provides minimum variance estimates [147]. The algorithm is well-known for its accuracy; its criteria are a multimodal nonlinear multivariate optimization problem, leading to a high computational complexity [148]. Genetic algorithms are used to optimize the WSF and reduce the complexity [149]; it requires the knowledge of the number of directional sources [150]. Recall the covariance matrix R ∶
+where A(θ), P and Λ are the steering matrix, the statistical expectation of transmitted sig
+nal, and diagonal matrix of eigenvalues. By setting I = UsUH
+s + UnUH
+n and removing the
+σ2UnUH
+n from both sides and multiplying the equation by Us from the right:
+Rearranging the equation:
+The angles are estimated by solving the following no-linear equation:
+where W = Λs − σ2I
+2
+Λ−1
+s
+The WSF shows better performance when coherent signals exist, rooting version of Weighted Subspace Fitting was introduced for ULA this also referred to as MODE technique, In [151], a comparison between Min-norm and root-MUSIC was performed; the estimated variance achieved by root-MUSIC is less than or equal to that of the root-min-norm method. In [152], a comparison study between root-WSF, MUSIC, root-MUSIC, ESPRIT, and Capon was conducted using ULA over many scenarios; it was found that Root-WSF has the best and stable performance. In [153], a performance comparison between MUSIC, root-MUSIC and ESPRIT was conducted; it was found that MUSIC has good performance with a low number of array elements and high SNR. While Root-MUSIC needs more elements, ESPRIT is less dependent on the number of array elements and performs better in low SNR scenarios. In [148], a comparison between GA-WSF was compared to MUSIC, it was found that the former outperform the latter in terms of accuracy over different set of SNR. In [143], ESPRIT and MUSIC’s performance was compared using different number antenna elements, different number of snapshots, and different SNR levels; it was found that both techniques provide accurate results. However, MUSIC shows more accurate and stable results. In [154], a comparison between MUSIC, MVDR, Min-norm, ESPRIT DOA algorithms were used in a MIMO-OFDM radar system. It was found that for determining a target, MUSIC shows the best resolution, followed by Min-norm and then ESPRIT. However, if two sources are closely spaced, Min-norm tends to have the best performance, followed by ESPRIT and then MUSIC. MUSIC tends to have the best results than Capon, Bartlett, and Min-norm, as observed by [145].
+(16)
+R = APAH + σ2I = UsΛsUH
+s + σ2UnUH
+n
+(17)
+APAHUs + σ2I = UsΛsI
+(18)
+Us = AT
+(19)
+̂θ = arg min Tr (I − A(AHA)
+−1
+AH) ̂USW ̂UH
+S)
+
+
+308 H. Obeidat et al.
+13
+4.2 Time of Arrival Measurements
+In TOA measurements using wave velocity, the flight time between the AP and the mobile is calculated to estimate the distance between the two sensors [155]. Waves used for localization
+include RF signals and acoustic signals [155]. The velocity of radio waves is 3 × 108 m/s, while acoustic waves’ speed is 343.59 m/s [148]; therefore, RF measurements are more prone
+to errors. A measurement error of 1μs will lead to 300 m error using RF waves, leading to 0.00034359 m error using acoustic waves [156]. When the receiver has 1 GHz bandwidth, the
+receiver resolution will be about 1×10–9. Therefore, the maximum error will be 0.3 m, while
+when using 10 MHz bandwidth, the receiver resolution will be about 1×10–7 and the maximum error will be around 30 m [90]. TOA localization uses the concept of lateration [39]. To solve these equations, it must have three equations (i.e., three APs measurements must be used). In a 3D situation (x, y, z) four APs at least must be used to have a unique solution. TOA measurements are transformed into circular equations, by solving these equations the coordinates of the mobile will be inferred [157]. TOA circular equations are solved using NLS and LLS similar to RSS range-based positioning, as shown in Fig. 1 TOA circular equations are solved using NLS and LLS similar to RSS range-based positioning. Nonlinear Least Square (NLS) is more complicated and more accurate, while LLS is very sensitive to the presence of noise and NLOS [158]. Another related time measurement is the time difference of arrival (TDOA), where the time difference between two TOA measurements are used to formulate one equation. Possessing three TOA measurements will formulate two TDOA measurements; however, the third equation will depend on the other equations and hence does not provide new information. To have a unique solution, four APs measurements are used [157]. Possible locations for the mobile will be located on a hyperbola [157]. The intersection of two hyperbolae will find the location [157], as shown in Fig. 2. All sensors, including the mobile, must be synchronized in TOA since the mobile’s clock is not as accurate as of the base station’s clock [159, [160]. As a result, there will be an error in estimating the flight time and, thus, localization errors; however, in TDOA, only APs are required to be synchronized [159]. On the other hand, TOA makes better use of existing information; one measurement of TOA will confine the possible locations for the mobile to be on a circle, using two measurements, the mobile will be located possibly in two locations using TOA, while using TDOA the location will lie on a hyperbola, using three measurements TOA can estimate a unique solution while TDOA will have one or possibly two solutions [161]. Another drawback of using TDOA is the sensitivity LOS existence [162]; due to hyperbole nature, a small amount of error will lead to a massive change in the curve, and the result will be less accurate [163]. Suppose the LOS path suffered from attenuation and fall below the threshold chosen to reject the noise. In that case, the next path with power above noise level is considered the first arrival path; this will lead to inaccurate TOA estimation and, thus, erroneous localization [134]. The wave encountered walls through the propagation. As a result, the propagation time will not be a distance-dependent only, but a material-dependent as well
+[164]. The excess delay is given by [164], where εr is the material relative permittivity, w is the thickness of the material and c is the speed of light:
+(20)
+τex =
+�√
+r −1
+�w
+c
+
+
+309
+A Review of Indoor Localization Techniques and Wireless...
+13
+The receiver’s ability to separate closed multipath components depends on its bandwidth. A larger receiver bandwidth BW a better separation for closely multipath components. For example, a receiver with BW=30 MHz will have a time resolution around 33.3 ns; if less than 33.3 ns separated the incoming signals, the receiver would consider them one signal. As a result, delay estimation will be inaccurate. With BW’s availability, the temporal resolution becomes high and better separates the closely multipath signals.
+4.2.1 Correlation Based Techniques
+Cross-correlation is one of the most comprehensive methods used to estimate TOA [134]. In Fig. 4, TOA estimation is demonstrated; once the signal arrived, it matched (correlated) to a known template p(t) by a match filter MF. The output of the filter is forwarded to a square law device where the sign of the correlated signal is removed, and then the time instant with the maximum peak value represents the time at which the signal arrived first [164]. In multipath propagation adjacent, arrival peaks will have comparable amplitudes to the correct one; therefore, selecting the right peak becomes ambiguous, leading to large errors [164]. This method is preferred to its low complexity; however, it’s prone to multipath and noise.
+4.2.2 Inverse Fourier Transform Method (Deconvolution)
+This method is based on the fact that the received signal is a convolution of the transmitted signal and the channel, knowing the channel response will give the signals’ arrival times. In the frequency domain, the convolution becomes multiplication. Thus the channel response can be estimated by dividing the received signal by the transmitted signal [133]. The deconvolution problem is defined as if the output of a convolution process v(t) and the inputs s(t) are given what would be the other input h(t) [165]. The Fourier Transform of the channel response h(t) is given by: is expressed as [133]:
+where V(f ) and S(f ) are the Fourier Transform of the received signal v(t), the transmitted signal s(t), and additive white Gaussian noise (AWGN) n(t), respectively.
+(21)
+H(f ) = V(f )
+S(f ) − N(f )
+S(f )
+Fig. 4 TOA estimation using cross-correlation [164]
+
+
+310 H. Obeidat et al.
+13
+By taking the inverse Fourier transform of H(f ) the channel response is estimated and hence TOA. Practically this is done by sweeping the frequency from the lowest
+frequency ( fc − B
+2 ) to highest frequency ( fc + B
+2 ) by a step of Δf [166]. Where B is the
+bandwidth, fc is the center frequency and Δf is the frequency segment. The range of frequencies is shown in Eq. 22.
+where f0 is the lowest frequency and n is ranged from 1 to K. For every frequency step, different values of V(f ), S(f ), H(f ) and N(f ) will be observed. A matrix can be generated to represent channel behavior over the bandwidth:
+This method performs better than the convolution-based method for resolving the
+closely separated multipath, but it suffers from the noise enhancement N(f )
+S(f ) . Another drawback of this method is the size of memory required for the matrices [133].
+4.2.3 Maximum Likelihood Techniques
+In many works in literature, TOA is considered as a special case of channel estimation [164]; in such a case, channel coefficients and time delays are unknowns, the log-likelihood function for the unknown parameters is [133]:
+where T0 is the symbol duration. The maximum likelihood estimate is given by [133]:
+The algorithm is complicated, requires a huge computational solution, and is not effective in closely spaced multipath [133].
+4.2.4 Subspace Techniques
+Considering Eq. 23, if L observations are collected and at each frequency step, and M signal delays are received at each observation, channel H will include information about the frequency segments and time delays. It’s possible to view the time delays and the channel behavior on each delay as [166]:
+where
+(22)
+f (n) = f0 + (n − 1)Δf
+(23)
+V =S⋅H+N
+(24)
+℧ = α1, α2, ... , αM, τ1, τ2, ... , τM
+(25)
+L(℧) = −
+T0
+0
+x(t) −
+M
+m=1
+αms t − τm
+2
+dt
+(26)
+̂℧ML = arg m℧ax {L(℧)}
+(27)
+HK×1 = UK×MΔAM×1
+
+
+311
+A Review of Indoor Localization Techniques and Wireless...
+13
+The nth row of U times A represents the channel response at the nth frequency [167]. Substituting the value of H in Eq. 30 into Eq. 29 and multiplying both sides of Eq. 23 by
+S−1 [166]:
+where (Y = S−1V) and (W = S−1N). The covariance matrix can be taken for Eq. 28 by taking L observations as in [166]:
+Assuming that both signal delays and noise are orthogonal where σ2 is the noise variance. Using the concept of eigenvalues and eigenvectors, R has K dimensional space which can be decomposed into M signal delays sub-spaces QS and (K − M) noise sub-spaces QN [168], time delays are estimated as:
+In Fig. 5, a comparison between MUSIC and IF algorithms is presented, the MUSIC algorithm outperforms the IF algorithm provided by its ability to distinguish closed multipath components. Despite the advantages of the MUSIC algorithm, however, the multipath number is a priori information for the algorithm [133]. The measurements are assumed to be stationary; therefore, the matrix is Hermitian and Toplitz. However, in real-life scenarios, samples taken are finite and small, which will not make the matrix to be Toplitz; the Covariance matrix can be further improved by using the forward–backward covariance matrix (FBCM) [166]:
+where J is an exchange matrix; elements of the matrix are zero except the anti-diagonal where elements are ones. Hybrid algorithms are used TOA and DOA in [169], where a two-dimensional MUSIC algorithm is used to perform localization in an IR-UWB system. And as in [170], a twodimensional MUSIC algorithm is used in TOA and DOA estimation using a uniform circular array.
+U=
+⎡⎢⎢⎢⎢⎢⎢⎣
+1
+e−j2πΔf τ1
+. . .
+e−j2π(K−1)Δf τ1
+...
+1
+e−j2πΔf τM
+. . .
+e−j2π(K−1)Δf τM
+⎤⎥⎥⎥⎥⎥⎥⎦
+A=
+⎡⎢⎢⎢⎢⎣
+α1 e−j2π f0 τ1
+. . .
+αM e−j2πf0τM
+⎤⎥⎥⎥⎥⎦
+(28)
+Y = UA + W
+(29)
+R = UAAHUH + WWH = URAAUH + σ2I
+(30)
+S= 1
+u(τ )H QH
+N QN u(τ)
+=1
+QN u(τ) 2
+(31)
+RFB = 1
+2 R + JR*J
+
+
+312 H. Obeidat et al.
+13
+4.3 Received Signal Strength
+The idea behind localization using RSS is to establish a one–one relationship between the target location and it’s RSS [171]. RSS level decreases with the distance between transmitter and receiver (known as RSS’s decay law with distance). However, the RSS-distance relationship is not necessarily linear, especially in indoor environments due to multipath [172]. Moreover, since 50% of the human body is water, people’s movement causes fluctuations of RSS with time, which reduces localization accuracy [65, 173, 174]. RSS measuring requires only power detectors that are available in WLAN, UWB, Zigbee, Bluetooth, and infrared devices. Utilizing WLAN for localization purposes is advantageous due to its continuous monitoring, low cost, and its capability of working unattended for years [175, 176]; however, this may introduce interference problems with other devices works on the same frequency bands such as microwave ovens and Bluetooth devices. Thus, the probability of error may increase, although the correlation becomes trivial by using different channels [172]. RSS systems do not rely on timing information; this makes them more robust to multipath. Moreover, synchronization between devices is not required [177]. RSS localization systems excel in short-range distances; however, it provides lower accuracy in long-range distances compared to TOA systems favorable for outdoor applications [178]. On the other hand, training and complex matching algorithms are needed to perform localization [179]. Moreover, RSS is sensitive to shadowing, low signal to noise ratio (SNR), and NLOS propagation. Many RSS-based localization algorithms are presented in the literature, including range-based position, radio-frequency fingerprinting technique, proximity-based position, and probabilistic estimation [133]. A brief discussion of these algorithms is introduced in the following subsections. Range-based position Localization using a range-based technique includes two steps: ranging and lateration [180]. In the first step, a distance-power relationship is formulated depending on the
+Fig. 5 TOA estimation comparison between MUSIC and IFT algorithms
+
+
+313
+A Review of Indoor Localization Techniques and Wireless...
+13
+observed RSS values; in the latter step, the mobile’s location is inferred based on the distances obtained using least square techniques. This localization type is preferred due to its ease; however, it suffers from varying RSS measurements [181]. RSS values vary randomly within indoor environments. As the Tx-Rx distance increases, the SS level does not follow a monotonic decrease. This nonlinearity arises due to the fading effect. At any receiver point, the received power is the transmitted power from the transmitter minus losses; those losses are due to distance (the area mean propagation loss), shadowing (local mean propagation loss), and multipath (fast fading). Access points (AP) locations tend to be known in indoor environments, while the mobile’s location is unknown. For AP located at a known location (xi, yi) and a mobile located at an unknown location (x, y), the distance di between AP and the mobile is given by [133, 182]:
+where d0, Pt,PL d0 , χσ and n are reference distance, transmitted power, average path loss at at d0, Gaussian random variable with zero mean represents shadow fading and path loss exponent. For an omnidirectional antenna, possible mobile locations may lie on a circle; mobile coordinates are the solution of the circle equation shown below:
+Provided that di value is given by applying Eq. 33. Since di and (xi, yi) are knowns, the remaining unknowns are (x, y), which needs at least another equation to be solved.
+Estimation of environmental parameters χσ and n is accomplished by taking training data (SS collected from known locations), by fitting these data into a model using linear regression, the unknown parameters are estimated [126]. Due to the effect of noise and NLOS, the exact solution for a mobile’s location may not exist. In this case, least-square methods are applied. These methods are categorized into Non-linear least square (NLS) and linear least square (LLS) [133]. The principle is as follows: the available information includes known parameters (xi, yi) and the measured parameter di. The target is to estimate the unknown location of the mobile (x, y). This is accomplished by searching for all possible locations (x, y) such that the distance between this point and (xi, yi) is approaching di as much possible for all N APs, as shown in Eq. 34 [133]:
+The above approach is the NLS method, which depends on its initial guess; therefore, it’s required to perform several iterations to get better results; however, this requires enormous computations. For a less computational cost, the LLS approach is performed; nevertheless, less accurate results are obtained [133]. A possible way to perform linearization is by taking the mean of all APs measurements then perform a subtraction from each observation [133]. Lateration is prone to outliers (when the estimated location is too far away from the actual one). To give robustness to the system, outliers measurements are excluded by taking the median value of the sum [183].
+(32)
+di = d0 10
+P(di)−Pt −PL(d0)+χσ 10
+−1 n
+(33)
+d2
+i = x − xi
+2 + y − yi
+2
+(34)
+(̂x, ̂y) = arg mx,iyn
+N
+i=1
+x − xi
+2 + y − yi
+2 − d2
+i
+
+
+314 H. Obeidat et al.
+13
+Measurements accuracy depends on many parameters, including the unknown Pt. Another problem is the fluctuation of RSS values with time. To remove the need for having a priori knowledge of Pt and to reduce the effects of environmental changes, Differential RSS (DRSS) is adopted [124, 125]. Although this method reduces dependence on knowing the value of Pt, it has poor performance in indoor environments compared to RSS [125].
+4.4 Radio‐Frequency Fingerprinting
+Constructing a signal propagation model can be a very challenging task due to the complexities of indoor environments; rather than modeling RSS behavior, another approach can be used known as the Radio Frequency-fingerprinting technique [176, 184, [185]. Several fingerprinting approaches are used; the most straightforward and most popular approach is Pattern Recognition Technique [91]. RF–fingerprinting consists of two phases; the offline phase and the online phase. In the offline phase (Training phase), the area of interest is divided into grids. In each grid, many RSS are collected from surrounding APs and averaged to remove the fast fading effect; averaged RSS with corresponding location (also called reference points RP) are stored in a database known as Radio map [186]. In the Online phase (Real-time phase), RSS measurements are collected from unknown locations called test points (TP); these measurements are then compared with the offline phase database. One possible method is to estimate the smallest Euclidean distance between the test point measurements and the radio map subspace [187]. The RP with the corresponding smallest Euclidean distance represents TP’s closest location [186], as shown in Eq. 35.
+where k is the kth RP, other methods return the k-nearest locations, which have the lowest values of Eq. 35 [188]. The level of achieved accuracy depends heavily on how many APs and RPs are used. Adding more APs will reduce the possibility of having ambiguous results and tend to enhance the localization process. Adding more RPs will enhance resolution; however, this will cost more labor work. Another disadvantage of this approach is the need for regular updates for the radio map as the building layout or the number of operating APs [133, 189]. In [190], it was found that adding more APs will increase the robustness of the localization. Also, it was suggested that even systems with a low number of RPs could afford good accuracy provided that there was an adequate number of APs in the system. Other fingerprinting approaches based on machine learning methods including K- Nearest Neighbor (KNN) [91], Support Vector Machines (SVMs) [191], Multi-layer Perceptron (MLP) [192], Decision Trees [193] and Random Forest [194]. In [192], KNN and MLP classifiers’ performance was compared, it was found that KNN has better performance in terms of accuracy and computational time.
+4.4.1 Proximity‐Based Position
+Mobiles can receive power signals until a certain level, where below such a level, the signal will be considered as noise; sensitivity is the term used to express this level.
+(35)
+arg min
+RP(k)
+L
+l=1
+TPl − RP(k)l
+2 ∀k=1∶K
+
+
+315
+A Review of Indoor Localization Techniques and Wireless...
+13
+When RSS is below sensitivity, the mobile and AP are no longer in connection, in which the location of the mobile is assumed to be out of the AP coverage; when the RSS level is higher than the threshold, the AP and the mobile are connected, and hence it’s within the AP coverage [117, 118]. Proximity gives an idea of whether the mobile is within the coverage area of an AP or not; if the coverage area is large, the information may not be beneficial. However, considering the intersection between APs coverage, this will enhance localization by shrinking the areas of possible locations [195].
+4.4.2 Maximum Likelihood Estimation
+In this method, RSS behavior is modeled as a random variable; two stages are performed similarly to the RF-Fingerprinting approach. In the first stage, the study area is divided into J grids, SS measurements are collected from the grid; these data are processed to give a probabilistic distribution for each location’s SS behavior. In the second stage, the mobile’s RSS from surrounding APs are collected from an unknown location and stored in a vector. Then mobile’s location is inferred based on Maximum Likelihood Estimation (MLE) as shown in Eq. 36 [196]:
+where P Lj ss is the probability that the mobile is located at the location Lj given that the RSS vector is (ss). Assuming M APs. The above equation can be expressed as:
+where
+P Lj is he probability of each grid to be the location where the mobile locates, P ssi Lj is the probability distribution of RSS from the ith AP at the jth grid, and P ssi is the probability for RSS from the ith AP in all grids. Since the mobile location is unknown, then P Lj is equal. The algorithm shows a precise analysis of the given data; however, it suffers from extensive labor work [133]. Figure 6 and 7 give comparisons between RSS based algorithm, including the radar algorithm (RF-fingerprinting), GR gridded radar (RF-fingerprinting), ABP (MLE), H1 (MLE), LLS, and NLS (Range based) using WLAN network [133, 197]. As seen in these figures, MLE and RF fingerprinting performance are very similar, while for rangebased algorithms, the performance is relatively poor. Also, it can be seen that NLS is more accurate compared to LLS.
+(36)
+(̂x, ̂y) = arg mLaj x
+P Lj ss
+(37)
+P Lj ss = P ss Lj P Lj
+P(ss)
+(38)
+P ss Lj =
+M
+i=1
+P ssi Lj
+(39)
+P(ss) =
+M
+i=1
+P ssi
+
+
+316 H. Obeidat et al.
+13
+Fig. 6 Performance comparison between RSS based algorithms [197]
+Fig. 7 Performance comparison between RSS based algorithms [133]
+Table 4 Localization methods techniques comparison
+Method Accuracy Sensitivity to multipath
+Additional hardware
+Advantages Disadvantages
+TOA High Yes Yes High accuracy No need for extra training Scalability
+Requires precise synchronization Requires huge bandwidth Complex hardware High cost
+AOA Medium Yes Yes Requires less number of APs Complex algorithms Expensive Requires antenna arrays Low accuracy
+RSS Medium Yes No Cheap Simple hardware No need for timing Low sensitivity to BW Robust to NLOS conditions
+Sensitive to shadowing Low accuracy Complex algorithms Requires huge training
+
+
+317
+A Review of Indoor Localization Techniques and Wireless...
+13
+In Table 4, a comparison between AOA, TOA, and RSS localization methods is presented; the comparison includes the accuracy, sensitivity to multipath, requiring additional hardware, advantages, and disadvantages [98, 133, 198].
+5 Conclusions
+A review of indoor localization techniques and wireless technologies was introduced. This review aims to make a comprehensive awareness of localization techniques and technologies used in indoor environments. The survey overviews the localization system technologies, including satellite-based navigations, inertial navigation systems, magneticbased navigations, sound-based technologies, optical-based technologies, and RF-based technologies. The review also investigates localization detection techniques, including proximitybased techniques, scene analysis, triangulations, and dead reckoning. And finally, the paper introduces the most common localization algorithms and methods, including the angle of arrival (AOA), time of arrival (TOA), and received signal strength (RSS). Choosing the localization method depends on many factors, including cost, available resources, type of environment, and accuracy required; the most powerful technique is the one that gives high accuracy with less computation.
+Compliance with ethical standards
+Declaration of competing interest The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if changes were made. The images or other third party material in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative Commons licence and your intended use is not permitted by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.
+References
+1. Zhang, M., Zhang, S., & Cao, J. (2008). Fusing received signal strength from multiple access points for WLAN user location estimation. In International Conference on Internet Computing in Science and Engineering, 2008, pp 173–180.
+2. Fouskas, K., Giaglis, G., Kourouthanassis, P., Pateli, A., & Tsamakos, A. (2002). On the potential use of mobile positioning technologies in indoor environments. BLED 2002 Proc., p. 33, 2002. 3. Kourouthanassis, P., Koukara, L., Lazaris, C., & Thiveos, K. (2001). Last-mile supply chain management: Mygrocer innovative business and technology framework. In the Proceedings of the 17th International Logistics Congress: Strategies and Applications, Thessaloniki, Greece, 2001, pp. 264–273. 4. Bellotti, F., Berta, C., De Gloria, A., & Margarone, M. (2002). User testing a hypermedia tour guide. IEEE Pervasive Computing, 1(2), 33–41.
+
+
+318 H. Obeidat et al.
+13
+5. The Art Newspaper, “Art’s Most Popular: here are 2019’s most visited shows and museums,” 31/03/2020. [Online]. Available: https://www.theartnewspaper.com/analysis/art-s-most-popular-hereare-2019-s-most-visited-shows-and-museums. 6. Hahn, J. (2017). Indoor positioning services and location-based recommendations. Library Technology Reports , 53(1), 9–16.
+7. Calderoni, L., Ferrara, M., Franco, A., & Maio, D. (2015). Indoor localization in a hospital environment using random forest classifiers. Expert Systems With Applications, 42(1), 125–134. 8. Shuaieb, W., et al. (2020). RFID RSS fingerprinting system for wearable human activity recognition. Future Internet, 12(2), 33.
+9. Ji, Y., Biaz, S., Wu, S., & Qi, B. (2006). Impact of building environment on the performance of dynamic indoor localization. In. IEEE Annual Wireless and Microwave Technology Conference, 2006, pp 1–5. 10. Nilsson, J.-O., Rantakokko, J., Händel, P., Skog, I., Ohlsson, M., & Hari, K. V. S. (2014). Accurate indoor positioning of firefighters using dual foot-mounted inertial sensors and inter-agent ranging. In 2014 IEEE/ION Position. Location and Navigation Symposium-PLANS, 2014, pp 631–636.
+11. Islam, T., Rahman, H. A., & Syrus, M. A. (2015). Fire detection system with indoor localization using ZigBee based wireless sensor network. In 2015 international conference on informatics, electronics & vision (ICIEV), 2015, pp. 1–6.
+12. Amundson, I., & Koutsoukos, X. D. (2009). A survey on localization for mobile wireless sensor networks. In International Workshop on Mobile Entity Localization and Tracking in GPS-less Environments, 2009, pp 235–254. 13. Hamzeh. O., & Elnagar, A.. (2015). A Kinect-based indoor mobile robot localization. In 2015 10th International Symposium on Mechatronics and its Applications (ISMA), 2015, pp. 1–6.
+14. Nirjon, S., Liu, J., DeJean,., Priyantha, B., Jin, Y., & Hart, T. (2014). COIN-GPS: indoor localization from direct GPS receiving. In Proceedings of the 12th annual international conference on Mobile systems, applications, and services, 2014, pp. 301–314.
+15. Wan, X., & Zhan, X. (2011). The research of indoor navigation system using pseudolites. Procedia Engineering, 15, 1446–1450.
+16. Xu, R., Chen, W., Xu, Y., & Ji, S. (2015). A new indoor positioning system architecture using GPS signals. Sensors, 15(5), 10074–10087. 17. Fusco, G., & Coughlan, J. M. (2018). Indoor localization using computer vision and visualinertial odometry. In International Conference on Computers Helping People with Special Needs, 2018, pp. 86–93. 18. Bekir, E. (2007). Introduction to modern navigation systems. Singapore: World Scientific, 2007. 19. Hu, G., Zhang, W., Wan, H., & Li, X. (2020). Improving the heading accuracy in indoor pedestrian navigation based on a decision tree and Kalman filter. Sensors, 20(6), 1578. 20. Jung, S.-Y., Hann, S., & Park, C.-S. (2011). TDOA-based optical wireless indoor localization using LED ceiling lamps. IEEE Transactions on Consumer Electronics, 57(4), 1592–1597.
+21. Chen, Z., Zhu, Q., & Soh, Y. C. (2016). Smartphone inertial sensor-based indoor localization and tracking with iBeacon corrections. IEEE Transactions on Industrial Informatics, 12(4), 1540–1549. 22. Wu, X., Shen, R., Fu, L., Tian, X., Liu, P., & Wang, X. (2017). iBILL: Using iBeacon and inertial sensors for accurate indoor localization in large open areas. IEEE Access, 5, 14589–14599. 23. Yang, H., et al. (2016). Smartphone-based indoor localization system using inertial sensor and acoustic transmitter/receiver. IEEE Sensors Journal, 16(22), 8051–8061. 24. Vy, T. D., Nguyen, T. L. N., & Shin, Y. (2019). “A smartphone indoor localization using inertial sensors and single Wi-Fi access point”, in. International Conference on Indoor Positioning and Indoor Navigation (IPIN), 2019, 1–7.
+25. E. M. Diaz, D. B. Ahmed, and S. Kaiser, “A review of indoor localization methods based on inertial sensors. In Geographical and Fingerprinting Data to Create Systems for Indoor Positioning and Indoor/Outdoor Navigation. Amsterdam: Elsevier, 2019, pp. 311–333. 26. Shu, Y., Bo, C., Shen, G., Zhao, C., Li, L., & Zhao, F. (2015). Magicol: Indoor localization using pervasive magnetic field and opportunistic WiFi sensing. IEEE Journal on Selected Areas in Communications, 33(7), 1443–1457.
+27. Subbu, K. P., Gozick, B., & Dantu, R. (2013). LocateMe: Magnetic-fields-based indoor localization using smartphones. ACM Transactions on Intelligent Systems and Technology, 4(4), 1–27.
+28. Davidson, P., & Piché, R. (2016). A survey of selected indoor positioning methods for smartphones. IEEE Communications Surveys & Tutori,als 19(2), 1347–1370.
+29. Gozick, B., Subbu, K. P., Dantu, R., & Maeshiro, T. (2011). Magnetic maps for indoor navigation. IEEE Transactions on Instrumentation and Measurement, 60(12), 3883–3891.
+
+
+319
+A Review of Indoor Localization Techniques and Wireless...
+13
+30. Lee, N., Ahn, S., & Han, D. (2018). AMID: Accurate magnetic indoor localization using deep learning. Sensors, 18(5), 1598. 31. Xie,H., Gu, T., Tao, X., Ye, H., & Lv, J. (2014). “MaLoc: A practical magnetic fingerprinting approach to indoor localization using smartphones. In Proceedings of the 2014 ACM International Joint Conference on Pervasive and Ubiquitous Computing, 2014, pp. 243–253.
+32. Liu, Z., Zhang, L., Liu, Q., Yin, Y., Cheng, L., & Zimmermann, R. (2016). Fusion of magnetic and visual sensors for indoor localization: Infrastructure-free and more effective. IEEE Transactions on Multimedia, 19(4), 874–888.
+33. Hsiao, C.-C., & Huang, P. (2008). Two practical considerations of beacon deployment for ultrasound-based indoor localization systems. In 2008 IEEE International Conference on Sensor Networks, Ubiquitous, and Trustworthy Computing (sutc 2008), 2008, pp. 306–311.
+34. Sainjeon, F., Gaboury, S., & Bouchard, B. (2016). Real-Time Indoor Localization in Smart Homes Using Ultrasound Technology. In Proceedings of the 9th ACM International Conference on PErvasive Technologies Related to Assistive Environments, 2016, pp. 1–4.
+35. Hammoud, A., Deriaz, M., & Konstantas, D. (2016). Robust ultrasound-based room-level localization system using cots components. In 2016 Fourth international conference on ubiquitous positioning, indoor navigation and location based services (UPINLBS), 2016, pp. 11–19.
+36. Qi, J., & Liu, G.-P. (2017). A robust high-accuracy ultrasound indoor positioning system based on a wireless sensor network. Sensors, 17(11), 2554. 37. Bordoy, J., Wendeberg, J., Schindelhauer, C., & Reindl, L. M. (2015). Single transceiver devicefree indoor localization using ultrasound body reflections and walls. In. International Conference on Indoor Positioning and Indoor Navigation (IPIN), 2015, 1–7.
+38. Runge, A., Baunach, M., & Kolla, R. (2011). Precise self-calibration of ultrasound based indoor localization systems. In. International Conference on Indoor Positioning and Indoor Navigation, 2011, 1–8.
+39. Sertatıl, C., Altınkaya, M. A., & Raoof, K. (2012). A novel acoustic indoor localization system employing CDMA. Digital Signal Processing, 22(3), 506–517.
+40. Chen, X., Chen, Y., Cao, S., Zhang, L., Zhang, X., & Chen, X. (2019). Acoustic indoor localization system integrating TDMA+ FDMA transmission scheme and positioning correction technique. Sensors, 19(10), 2353. 41. Lopes, S. I., Vieira, J. M. N., Reis, J., Albuquerque, D., & Carvalho, N. B. (2015). Accurate smartphone indoor positioning using a WSN infrastructure and non-invasive audio for TDoA estimation. Pervasive and Mobile Computing, 20, 29–46. https://doi.org/10.1016/j.pmcj.2014.09.003. 42. Farid, Z., Nordin, R., & Ismail, M. (2013). Recent advances in wireless indoor localization techniques and system. Journal of Computer Networks and Communications, vol. 2013, 2013.
+43. Raharijaona, T., et al. (2017). Local positioning system using flickering infrared leds. Sensors, 17(11), 2518. 44. Mukhopadhyay, B., Sarangi, S., Srirangarajan, S., & Kar, S. (2018). Indoor localization using analog output of pyroelectric infrared sensors. In IEEE Wireless Communications and Networking Conference (WCNC), 2018, 1–6.
+45. Wang, K., Nirmalathas, A., Lim, C., Alameh, K., Li, H., & Skafidas, E. (2017). Indoor infrared optical wireless localization system with background light power estimation capability. Optics Express, 25(19), 22923–22931. 46. Luo, J., Fan, L., & Li, H. (2017). Indoor positioning systems based on visible light communication: State of the art. IEEE Communications Surveys & Tutorials, 19(4), 2871–2893.
+47. Liqun Li, F. Z., Pan Hu, Chunyi Peng, Guobin Shen (2014). Epsilon: A visible light based positioning system. In 11th USENIX Symposium on Networked Systems Design and Implementation, 2014, pp. 331–343. 48. Huynh, P., & Yoo, M. (2016). VLC-based positioning system for an indoor environment using an image sensor and an accelerometer sensor. Sensors, 16(6), 783. 49. Kuo, Y.-S., Pannuto, P., Hsiao, K.-J., & Dutta, P. (2014). Luxapose: Indoor positioning with mobile phones and visible light. In Proceedings of the 20th annual international conference on Mobile computing and networking, 2014, pp. 447–458.
+50. Xiao, Y. Ou, Y., & Feng, W. (2017) Localization of indoor robot based on particle filter with EKF proposal distribution. In 2017 IEEE international conference on cybernetics and intelligent systems (CIS) and IEEE conference on robotics, automation and mechatronics (RAM), 2017, pp. 568–571. 51. Liu, J. (2014). Survey of wireless based indoor localization technologies. Dep. Sci. Eng. Washingt. Univ., 2014.
+
+
+320 H. Obeidat et al.
+13
+52. Boukerche, A., Oliveira, H. A. B. F., Nakamura, E. F., & Loureiro, A. A. F. (2007). Localization systems for wireless sensor networks. IEEE Wireless Communications, 14(6), 6–12.
+53. Ahson, S. A., & Ilyas, M. (2010). Location-based services handbook: Applications, technologies, and security. Boca Raton: CRC Press, 2010. 54. Lin, T.-N., & Lin, P.-C. (2005). Performance comparison of indoor positioning techniques based on location fingerprinting in wireless networks. In 2005 international conference on wireless networks, communications and mobile computing, 2005, vol. 2, pp. 1569–1574.
+55. Reichenbach, F., & Timmermann, D. (2006). Indoor localization with low complexity in wireless sensor networks. In 2006 4th IEEE International Conference on Industrial Informatics, 2006, pp. 1018–1023. 56. Alkhatib, A. (2011). A Review of Wireless Sensor Networks Applications. In The 2011 Conference on Innovations in Computing and Engineering Machinery, 2011, vol. 2, pp. 3–8.
+57. Robles, J. J. (2014). Indoor localization based on wireless sensor networks. AEU-International Journal of Electronics and Communications, 68(7), 578–580.
+58. Maddumabandara, A., Leung, H., & Liu, M. (2015). Experimental evaluation of indoor localization using wireless sensor networks. IEEE Sensors Journal, 15(9), 5228–5237. 59. Sangthong, J., Thongkam,J., & Promwong, S. (2020). Indoor Wireless Sensor Network Localization Using RSSI Based Weighting Algorithm Method. In 2020 6th International Conference on Engineering, Applied Sciences and Technology (ICEAST), 2020, pp. 1–4.
+60. Munadhil, Z., Gharghan, S. K., Mutlag, A. H., Al-Naji, A., & Chahl, J. (2020). Neural network-based Alzheimer’s patient localization for wireless sensor network in an indoor environment. IEEE Access, 8, 150527–150538. 61. He, T., Huang, C., Blum, B. M., Stankovic, J. A., & Abdelzaher, T. (2003). Range-free localization schemes for large scale sensor networks. In Proceedings of the 9th annual international conference on Mobile computing and networking, 2003, pp. 81–95.
+62. A. T.-G. & C. G. C (2009). An, “Virtual Sensor Network Lifeline for Communications in Fire Fighting Rescue Scenarios. In 2009 IEEE 70th Vehicular Technology Conference Fall, 2009, pp. 1–5, https ://doi.org/10.1109/VETECF.2009.5379094. 63. New Atlas, “Squad positioning system helps fight fires and save lives,” 2009. [Online]. Available: https://newatlas.com/squad-fire-fighter-positioning-system/11929/. Accessed: 09-Jan-2021. 64. Robles, J. J., Deicke, M., & Lehnert, R. (2010). 3D fingerprint-based localization for wireless sensor networks. In 7th Workshop on Positioning. Navigation and Communication, 2010, 77–85. 65. Chapre, Y., Mohapatra, P., Jha, S., & Seneviratne, A. (2013). Received signal strength indicator and its analysis in a typical WLAN system (short paper). In 38th Annual IEEE Conference on Local Computer Networks, 2013, pp. 304–307. 66. Cheung, K. C., Intille, S. S., & Larson, K. (2006). An inexpensive bluetooth-based indoor positioning hack. In Proceedings of UbiComp, 2006, vol. 6.
+67. Huang, C.-N., & Chan, C.-T. (2011). ZigBee-based indoor location system by k-nearest neighbor algorithm with weighted RSSI. Procedia Computer Science, 5, 58–65. 68. Yavari, M., & Nickerson,B. G. (2014). Ultra wideband wireless positioning systems. Dept. Fac. Comput. Sci., Univ. New Brunswick, Fredericton, NB, Canada, Tech. Rep. TR14–230, 2014.
+69. Popleteev, A. (2017). Indoor localization using ambient FM radio RSS fingerprinting: A 9-month study. In IEEE International Conference on Computer and Information Technology (CIT), 2017, 128–134. 70. Chen, Y., Lymberopoulos, D., Liu, J., & Priyantha, B. (2013). Indoor localization using FM signals. IEEE Transactions on Mobile Computing, 12(8), 1502–1517.
+71. Xiao, J., Zhou, Z., Yi, Y., & Ni, L. M. (2016). A survey on wireless indoor localization from the device perspective. ACM Computing Surveys, 49(2), 1–31. 72. Popleteev, A., Osmani, V., & Mayora, O. (2012). Investigation of indoor localization with ambient FM radio stations. In IEEE International Conference on Pervasive Computing and Communications, 2012, 171–179. 73. Chai, M., Li, C., & Huang, H. (2020). A New Indoor Positioning Algorithm of Cellular and Wi-Fi Networks. J. Navig., 73(3), 509–529. 74. Liu, H. Darabi, H., Banerjee, P., & Liu, J. (2007). Survey of wireless indoor positioning techniques and systems. IEEE Trans. Syst. Man, Cybern. Part C (Applications Rev., vol. 37, no. 6, pp. 10671080, 2007. 75. Otsason, V., Varshavsky, A., LaMarca, A. & De Lara, E. (2005). Accurate GSM indoor localization. In International conference on ubiquitous computing, 2005, pp. 141–158.
+76. Varshavsky, A., De Lara, E., Hightower, J., LaMarca, A., & Otsason, V. (2007). GSM indoor localization. Pervasive and Mobile Computing, 3(6), 698–720.
+
+
+321
+A Review of Indoor Localization Techniques and Wireless...
+13
+77. Driusso, M., Marshall, C., Sabathy, M., Knutti, F., Mathis, H., & Babich, F. (2016). Indoor positioning using LTE signals. In International Conference on Indoor Positioning and Indoor Navigation (IPIN), 2016, 1–8.
+78. Abdallah, A., Shamaei, K., & Kassas, Z. (2008). Indoor positioning based on LTE carrier phase measurements and an inertial measurement unit. In Proceedings of ION GNSS Conference, 2018, pp. 3374–3384. 79. Abdallah, A., Shamaei, K., & Kassas, Z. (2019). Indoor localization with LTE carrier phase measurements and synthetic aperture antenna array,” in Proceedings of ION GNSS Conference, 2019, pp. 2670–2679. 80. Turkka, J., Hiltunen, T., Mondal, R. U., & Ristaniemi, T. (2015). “Performance evaluation of LTE radio fingerprinting using field measurements. In. International Symposium on Wireless Communication Systems (ISWCS), 2015, 466–470.
+81. Aguilar-Garcia, A., Fortes, S., Colin, E., & Barco, R. (2015). Enhancing RFID indoor localization with cellular technologies. EURASIP Journal on Wireless Communications and Networking, 2015(1), 219. 82. Martin, E., Vinyals, O., Friedland, G., & Bajcsy, R. (2010). Precise indoor localization using smart phones. In Proceedings of the 18th ACM international conference on Multimedia, 2010, pp. 787–790. 83. Alexandrou, R., Papadopoulos, H., & Konstantinidis, A. (2020). Smartphone indoor localization using bio-inspired modeling. In Nature-Inspired Computation in Navigation and Routing Problems. Heidelberg: Springer, 2020, pp. 149–167. 84. Machaj, J., & Brida, P. (2017). Impact of optimization algorithms on hybrid indoor positioning based on GSM and Wi-Fi signals. Concurrency and Computation Practice and Experience, 29(23), e3911. 85. Chen, Z., Zou, H., Jiang, H., Zhu, Q., Soh, Y. C., & Xie, L. (2015). Fusion of WiFi, smartphone sensors and landmarks using the Kalman filter for indoor localization. Sensors, 15(1), 715–732. 86. Navarro, E., Peuker, B., Quan, M., Clark, A. C., & Jipson,J. (2010). Wi-Fi Localization Using RSSI Fingerprinting.” Citeseer, 2010. 87. Le Dortz, N., Gain, F., & Zetterberg, P. (2012). WiFi fingerprint indoor positioning system using probability distribution comparison. In 2012 IEEE international conference on acoustics, speech and signal processing (ICASSP), 2012, pp. 2301–2304.
+88. Lashkari, A. H., Parhizkar, B., & Ngan, M. N. A. (2010). “WIFI-based indoor positioning system. In Second International Conference on Computer and Network Technology, 2010, 76–78.
+89. Wang, Y., & Xu, X. (2016). “Indoor localization service based on the data fusion of Wi-Fi and RFID. In IEEE International Conference on Web Services (ICWS), 2016, 180–187.
+90. Yang, C., & Shao, H.-R. (2015). WiFi-based indoor positioning. IEEE Communications Magazine, 53(3), 150–157. 91. Salamah, A. H., Tamazin, M., Sharkas, M. A., & Khedr, M. (2016). “An enhanced WiFi indoor localization system based on machine learning. In International Conference on Indoor Positioning and Indoor Navigation (IPIN), 2016, 1–8.
+92. Bianchi, V., Ciampolini, P., & De Munari, I. (2018). RSSI-based indoor localization and identification for ZigBee wireless sensor networks in smart homes. IEEE Transactions on Instrumentation and Measurement, 68(2), 566–575.
+93. Sugano, M., Kawazoe, T., Ohta, Y., & Murata, M. (2006). Indoor localization system using RSSI measurement of wireless sensor network based on ZigBee standard. Wireless Optical Communication, 538, 1–6.
+94. Niu, J., Wang, B., Shu, L., Duong, T. Q., & Chen, Y. (2015). ZIL: An energy-efficient indoor localization system using ZigBee radio to detect WiFi fingerprints. IEEE Journal on Selected Areas in Communications, 33(7), 1431–1442.
+95. Ou, C.-W., et al. (2017). “A ZigBee position technique for indoor localization based on proximity learning. In IEEE International Conference on Mechatronics and Automation (ICMA), 2017, 875–880. 96. Qureshi, U. M., Umair, Z., & Hancke, G. P. (2019). Evaluating the implications of varying Bluetooth low energy (BLE) transmission power levels on wireless indoor localization accuracy and precision. Sensors, 19(15), 3282.
+97. Altini, M., Brunelli, D., Farella, E., & Benini, L. (2010) Bluetooth indoor localization with multiple neural networks. In IEEE 5th International Symposium on Wireless Pervasive Computing 2010, 2010, pp. 295–300. 98. Zafari, F., Gkelias, A., & Leung, K. K. (2019). A survey of indoor localization systems and technologies. IEEE Communications Surveys & Tutorials , 21(3), 2568–2599.
+99. Ridolfi, M., Van de Velde, S., Steendam, H., & De Poorter, E. (2018). Analysis of the scalability of UWB indoor localization solutions for high user densities. Sensors, 18(6), 1875.
+
+
+322 H. Obeidat et al.
+13
+100. Liu, F., Wang, J., Zhang, J., & Han, H. (2019). An indoor localization method for pedestrians base on combined UWB/PDR/Floor map. Sensors, 19(11), 2578. 101. Alarifi, A., et al. (2016). Ultra wideband indoor positioning technologies: Analysis and recent advances. Sensors, 16(5), 707. 102. Monica, S., & Bergenti, F. (2019). Hybrid indoor localization using WiFi and UWB technologies. Electronics, 8(3), 334.
+103. Groβwindhager, B., Stocker, M., Rath, M., Boano, C. A., & Römer, K. (2019). SnapLoc: An ultra-fast UWB-based indoor localization system for an unlimited number of tags. In 2019 18th ACM/IEEE International Conference on Information Processing in Sensor Networks (IPSN), 2019, pp. 61–72.
+104. Poulose, A., Eyobu, O. S., Kim, M., & Han, D. S. (2019). “Localization Error Analysis of Indoor Positioning System Based on UWB Measurements. In Eleventh International Conference on Ubiquitous and Future Networks (ICUFN), 2019, 84–88.
+105. Tesoriero, R., Tebar, R., Gallud, J. A., Lozano, M. D., & Penichet, V. M. R. (2010). Improving location awareness in indoor spaces using RFID technology. Expert Systems with Applications, 37(1), 894–898. 106. Tesoriero, R., Gallud, J. A., Lozano, M., & Penichet, V. M. R. (2008). Using active and passive RFID technology to support indoor location-aware systems. IEEE Transactions on Consumer Electronics, 54(2), 578–583.
+107. Borriello, G. (2005). Session details: RFID: tagging the world,” Communication ACM, vol. 48, no. 9, 2005. 108. Deak, G., Curran, K., & Condell, J. (2012). A survey of active and passive indoor localisation systems. Computer Communications, 35(16), 1939–1954.
+109. Dian, Z., Kezhong, L., & Rui, M. (2015). A precise RFID indoor localization system with sensor network assistance. China Communication, 12(4), 13–22. 110. Bekkali, A., Sanson, H., & Matsumoto, M. (2007). RFID indoor positioning based on probabilistic RFID map and Kalman filtering. In Third IEEE International Conference on Wireless and Mobile Computing, Networking and Communications (WiMob 2007), 2007, p. 21.
+111. Alfurati, I. S., & Rashid, A. T. (2018). Performance comparison of three types of sensor matrices for indoor multi-robot localization. International Journal of Computers and Applications, 181(26), 22–29. 112. Brena, R. F., García-Vázquez, J. P., Galván-Tejada, C. E., Muñoz-Rodriguez, D., Vargas-Rosales, C., & Fangmeyer, J. (2017). Evolution of indoor positioning technologies: A survey,” Journal of Sensors, vol. 2017. 113. Stojanović, D., & Stojanović, N. (2014). Indoor localization and tracking: Methods, technologies and research challenges. Facta Universitatis. Series, Mechanics, Automatic Control and Robotics, 13(1), 57–72. 114. Oguntala, G., Abd-Alhameed, R., Jones, S., Noras, J., Patwary, M., & Rodriguez, J. (2018). Indoor location identification technologies for real-time IoT-based applications: An inclusive survey. Computer Science Review, 30, 55–79. 115. Mao, G. (2009). Localization Algorithms and Strategies for Wireless Sensor Networks: Monitoring and Surveillance Techniques for Target Tracking: Monitoring and Surveillance Techniques for Target Tracking. IGI Global, 2009. 116. Kjærgaard, M. B., Blunck, H., Godsk, T., Toftkjær, T., Christensen, D. L., & Grønbæk, K. (2010). Indoor positioning using GPS revisited. In International conference on pervasive computing, 2010, pp. 38–56. 117. Patwari, N., & Hero III, A. O. (2003). Using proximity and quantized RSS for sensor localization in wireless networks. In Proceedings of the 2nd ACM international conference on Wireless sensor networks and applications, 2003, pp. 20–29. 118. Küpper, A. (2005). Location-based services: fundamentals and operation. New York: John Wiley & Sons, 2005. 119. Hightower, J., & Borriello, G. (2001). Location sensing techniques. IEEE Computer, 34(8), 57–66. 120. Li, X., Pahlavan, K., & Beneat, J. (2002). Performance of TOA estimation techniques in indoor multipath channels. In The 13th IEEE international symposium on personal, indoor and mobile radio communications, 2002, vol. 2, pp. 911–915.
+121. Liu, Y., & Yang, Z. (2011). Localizability: Location-awareness Technology for Wireless Networks. New York, USA: Springer. 122. Viel, B., & Asplund, M. (2014). Why is fingerprint-based indoor localization still so hard?. In IEEE International Conference on Pervasive Computing and Communication Workshops (PERCOM WORKSHOPS), 2014, 443–448.
+
+
+323
+A Review of Indoor Localization Techniques and Wireless...
+13
+123. Langendoen, K., & Reijers, N. (2003). Distributed localization in wireless sensor networks: a quantitative comparison. Computer Networks, 43(4), 499–518. 124. Lin, L., So, H.-C., & Chan, Y.-T. (2013). Accurate and simple source localization using differential received signal strength. Digital Signal Processing, 23(3), 736–743. 125. Chang, N., Rashidzadeh, R., & Ahmadi, M. (2010). Robust indoor positioning using differential Wi-Fi access points. IEEE Transactions on Consumer Electronics, 56(3), 1860–1867.
+126. Dehghan, S. M. M., Moradi, H., & Shahidian, S. A. A. (2014). Optimal path planning for DRSSI based localization of an RF source by multiple UAVs. In Second RSI/ISM International Conference on Robotics and Mechatronics (ICRoM), 2014, 558–563.
+127. Liu, B.-C., & Lin, K.-H. (2008). Distance difference error correction by least square for stationary signal-strength-difference-based hyperbolic location in cellular communications. IEEE Transactions on Vehicular Technology, 57(1), 227–238.
+128. Bao, H., & Wong, W.-C. (2014). A novel map-based dead-reckoning algorithm for indoor localization. Journal of Sensors and Actuator Networks,, 3(1), 44–63.
+129. Kothari, N., Kannan, B., Glasgwow, E. D., & Dias, M. B. (2012). Robust indoor localization on a commercial smart phone. Procedia Computer Science, 10, 1114–1120. 130. Park, S., & Hashimoto, S. (2008). Indoor localization for autonomous mobile robot based on passive RFID. In IEEE international conference on robotics and biomimetics, 2009, 1856–1861.
+131. Bao, H., & Wong, W.-C. (2013). An indoor dead-reckoning algorithm with map matching. In 2013 9th international wireless communications and mobile computing conference (IWCMC), 2013, pp. 1534–1539. 132. Zou, H., Chen, Z., Jiang, H., Xie, L., & Spanos, C. (2017). Accurate indoor localization and tracking using mobile phone inertial sensors, WiFi and iBeacon. In IEEE International Symposium on Inertial Sensors and Systems (INERTIAL), 2017, 1–4. 133. Zekavat, R., & Buehrer, R. M. (2011). Handbook of position location: Theory, practice and advances, vol. 27. New York: John Wiley & Sons, 2011. 134. Patwari, N., Ash, J. N., Kyperountas, S., Hero, A. O., Moses, R. L., & Correal, N. S. (2005). Locating the nodes: cooperative localization in wireless sensor networks. IEEE Signal Processing Magazine, 22(4), 54–69.
+135. Chen, H.-C., Lin, T.-H., Kung, H. T., Lin, C.-K., & Gwon, Y. (2012) Determining RF angle of arrival using COTS antenna arrays: A field evaluation. In MILCOM 2012–2012 IEEE Military Communications Conference, 2012, pp. 1–6.
+136. Muhamed, R. (1996). Direction of arrival estimation using antenna arrays. Virginia Tech, 1996. 137. Godara, L. C. (1997). Application of antenna arrays to mobile communications. II. Beam-forming and direction-of-arrival considerations. Proceedings of the IEEE, 85(8), 1195–1245. 138. Krim, H., & Viberg, M. (1996). Two decades of array signal processing research: the parametric approach. IEEE Signal Processing Magazine, 13(4), 67–94.
+139. Foutz, J., Spanias, A., & Banavar, M. K. (2008). Narrowband direction of arrival estimation for antenna arrays. Synthesis Lectures on Antennas, 3(1), 1–76.
+140. Jiang, Y., Stoica, P., Wang, Z., & Li, J. (2003). Capon beamforming in the presence of steering vector errors and coherent signals. In 11th Annual Workshop on Adaptive Sensor Array Processing (ASAP 2003), 2003, pp. 11–13. 141. Schmidt, R. (1986). Multiple emitter location and signal parameter estimation. IEEE Transactions on Antennas and Propagation, 34(3), 276–280.
+142. Dhope, T. S. (2010). Application of music, esprit and root music in DOA estimation. Fac. Electr. Eng. Comput. Univ. Zagreb. Croat., 2010.
+143. Oumar, O. A., Siyau, M. F., & Sattar, T. P. (2012). Comparison between MUSIC and ESPRIT direction of arrival estimation algorithms for wireless communication systems. In The First International Conference on Future Generation Communication Technologies, 2012, pp. 99–103.
+144. Li, J., Jiang, D., & Zhang, X. (2016). DOA estimation based on combined unitary ESPRIT for coprime MIMO radar. IEEE Communications Letters, 21(1), 96–99.
+145. Sanson, J., Gameiro, A., Castanheira, D., & Monteiro, P. P. (2018). Comparison of DoA algorithms for MIMO OFDM radar. In 2018 15th European Radar Conference (EuRAD), 2018, pp. 226–229. 146. Viberg, M., Ottersten, B., & Kailath, T. (1991). Detection and estimation in sensor arrays using weighted subspace fitting. IEEE Transactions on Signal Processing, 39(11), 2436–2449. 147. Viberg, M., & Ottersten, B. (1991). Sensor array processing based on subspace fitting. IEEE Transactions on Signal Processing, 39(5), 1110–1121.
+148. Chen, H., Hu, J., Tian, H., Li, S., Liu, J., & Suzuki, M. (2018). A Low-Complexity GA-WSF Algorithm for Narrow-Band DOA Estimation. Int. J. Antennas Propag., vol. 2018, 2018.
+
+
+324 H. Obeidat et al.
+13
+149. Liao, Y., Fu, C., & Mung’onya, E. M. (2019). 2D DOA Estimation of PR-WSF Algorithm Based on Modified Fireworks Algorithm. In International Conference on Artificial Intelligence for Communications and Networks, 2019, pp. 210–224.
+150. Boustani, B., Baghdad, A., Sahel, A., Badri, A., & Ballouk, A. (2018). Adaptive algorithm for smart antenna system. In 2018 6th International Conference on Multimedia Computing and Systems (ICMCS), 2018, pp. 1–5. 151. Krim, H., Forster, P., & Proakis, J. G. (1992). Operator approach to performance analysis of rootMUSIC and root-min-norm. IEEE Transactions on Signal Processing, 40(7), 1687–1696.
+152. Boustani, B., Baghdad, A., Sahel, A., Badri, A., & Ballouk, A. (2019). Performance analysis of direction of arrival algorithms for smart antenna. International Journal of Electrical and Computer Engineering, vol. 9, 2019.
+153. Waweru, N. P., Konditi, D. B. O., & Langat, P. K. (2014). Performance analysis of MUSIC, rootMUSIC and ESPRIT DOA estimation algorithm. International Journal of Electronics and Communications, 8(1), 209–216. 154. Goli, S., & Elameer, A. S. (2018). Performance Analysis of Beam scan, MIN-NORM, Music and Mvdr DOA Estimation Algorithms. In International Conference on Engineering Technology and their Applications (IICETA), 2018, 72–76.
+155. Savvides, A., Han, C.-C., & Strivastava, M. B. (2001). Dynamic fine-grained localization in ad-hoc networks of sensors. In Proceedings of the 7th annual international conference on Mobile computing and networking, 2001, pp. 166–179. 156. Ash, J. N., & Moses, R. L. (2005). Acoustic time delay estimation and sensor network self-localization: Experimental results. Journal of the Acoustical Society of America, 118(2), 841–850.
+157. Wang, S., Min, J., & Yi, B. K. (2008). Location based services for mobiles: Technologies and standards. In IEEE international conference on communication (ICC), 2008, vol. 19.
+158. Go, S., Kim, S., & Chong, J.-W. (2014). An efficient non-line-of-sight error mitigation method for TOA measurement in indoor environments. In Proceedings of the 8th International Conference on Ubiquitous Information Management and Communication, 2014, pp. 1–5.
+159. Shin, D.-H., & Sung, T.-K. (2002). Comparisons of error characteristics between TOA and TDOA positioning. IEEE Transactions on Aerospace and Electronic Systems, 38(1), 307–311.
+160. Jagoe, A. (2003). Mobile location services: The definitive guide. New Jersey: Prentice Hall Professional. 161. Guvenc, I., & Chong, C.-C. (2009). A survey on TOA based wireless localization and NLOS mitigation techniques. IEEE Communications Surveys & Tutorials, 11(3), 107–124.
+162. Cong, L., & Zhuang, W. (2001). Non-line-of-sight error mitigation in TDOA mobile location. In GLOBECOM’01. IEEE Global Telecommunications Conference (Cat. No. 01CH37270), 2001, vol. 1, pp. 680–684. 163. Mailaender, L. (2007). Comparing geo-location bounds for TOA, TDOA, and round-trip TOA. In IEEE 18th International Symposium on Personal. Indoor and Mobile Radio Communications, 2007, 1–5. 164. Dardari, D., Conti, A., Ferner, U., Giorgetti, A., & Win, M. Z. (2009). Ranging with ultrawide bandwidth signals in multipath environments. Proceedings of the IEEE, 97(2), 404–426. 165. Hahm, M. D., Mitrovski, Z. I., & Titlebaum, E. L. (1997). Deconvolution in the presence of Doppler with application to specular multipath parameter estimation. IEEE Transactions on Signal Processing, 45(9), 2203–2219. 166. Li, X., & Pahlavan, K. (2004). Super-resolution TOA estimation with diversity for indoor geolocation. IEEE Transactions on Wireless Communications, 3(1), 224–234.
+167. Ali, A. A., & Omar, A. S. (2005). Time of arrival estimation for WLAN indoor positioning systems using matrix pencil super resolution algorithm. In Proceedings of the 2nd Workshop on Positioning, Navigation and Communication, 2005, vol. 5, pp. 11–20.
+168. Alsindi, N., Li, X., & Pahlavan, K. (2004). Performance of TOA estimation algorithms in different indoor multipath conditions. In 2004 IEEE Wireless Communications and Networking Conference (IEEE Cat. No. 04TH8733), 2004, vol. 1, pp. 495–500. 169. Wang, F., Zhang, X., & Wang, F. (2014). Joint estimation of TOA and DOA in IR-UWB system using a successive MUSIC algorithm. Wireless Personal Communications, 77(4), 2445–2464. 170. Chen, L., Qi, W., Liu, P., Yuan, E., Zhao, Y., & Ding, G. (2019). Low-complexity joint 2-D DOA and TOA estimation for multipath OFDM signals. IEEE Signal Processing Letters, 26(11), 1583–1587. 171. Sayrafian-Pour, K., & Kaspar, D. (2008). A robust model-based approach to indoor positioning using signal strength. In IEEE 19th International Symposium on Personal. Indoor and Mobile Radio Communications, 2008, 1–5.
+
+
+325
+A Review of Indoor Localization Techniques and Wireless...
+13
+172. Ladd, A. M., Bekris, K. E., Rudys, A. P., Wallach, D. S., & Kavraki, L. E. (2004). On the feasibility of using wireless ethernet for indoor localization. IEEE Transactions on Robotics and Automation, 20(3), 555–559. 173. Xu, L., Yang, F., Jiang, Y., Zhang, L., Feng, C., & Bao, N. (2011). Variation of received signal strength in wireless sensor network. In 2011 3rd International Conference on Advanced Computer Control, 2011, pp. 151–154. 174. Ullah, K., Custodio, I. V., Shah, N., & Moreira, E. D. S. (2013). An experimental study on the behavior of received signal strength in indoor environment. In 2013 11th International Conference on Frontiers of Information Technology, 2013, pp. 259–264.
+175. Obeidat, H. A. et al. (2013). Indoor localization using received signal strength. In 2013 8th IEEE Design and Test Symposium, 2013, pp. 1–6.
+176. Ahn, H.-S., & Yu, W. (2009). Environmental-adaptive RSSI-based indoor localization. IEEE Transactions on Automation Science and Engineering, 6(4), 626–633.
+177. Bouchereau, F., & Brady, D. (2004). “Bounds on range-resolution degradation using RSSI measurements. In 2004 IEEE International Conference on Communications (IEEE Cat. No. 04CH37577), 2004, vol. 6, pp. 3246–3250. 178. Munoz, D., Lara, F. B., Vargas, C., & Enriquez-Caldera, R. (2009). Position location techniques and applications. New York: Academic Press. 179. Hatami, A., Pahlavan, K., Heidari, M., & Akgul, F. (2006). On RSS and TOA based indoor geolocation-a comparative performance evaluation. In IEEE Wireless Communications and Networking Conference, 2006. WCNC 2006., 2006, vol. 4, pp. 2267–2272.
+180. Savvides, A., Park, H., & Srivastava, M. B. (2003). The n-hop multilateration primitive for node localization problems. Mobile Networks and Applications, 8(4), 443–451. 181. Zanca, G., Zorzi, F., Zanella, A., & Zorzi, M. (2008). Experimental comparison of RSSI-based localization algorithms for indoor wireless sensor networks. In Proceedings of the workshop on Real-world wireless sensor networks, 2008, pp. 1–5.
+182. Priyantha, N. B., Chakraborty, A., & Balakrishnan, H. (2000). The cricket location-support system. In Proceedings of the 6th annual international conference on Mobile computing and networking, 2000, pp. 32–43. 183. Wagner, D. (2004). Resilient aggregation in sensor networks. In Proceedings of the 2nd ACM workshop on Security of ad hoc and sensor networks, 2004, pp. 78–87.
+184. Alkasi, U., Al Shayokh, M., & Partal, H. P. (2013). An experimental comparison study on indoor localization: RF fingerprinting and multilateration methods. In 2013 International Conference on Electronics, Computer and Computation (ICECCO), 2013, pp. 255–259.
+185. Al Khanbashi, N. (2013). Real time evaluation of RF fingerprints in wireless LAN localization systems. In 10th Workshop on Positioning. Navigation and Communication (WPNC), 2013, 1–6. 186. Xie, L., Wang, Y., & Xue, X. (2010). A new indoor localization method based on inversion propagation model. In 2010 6th International Conference on Wireless Communications Networking and Mobile Computing (WiCOM), 2010, pp. 1–4.
+187. Bahl, P., & Padmanabhan, V. N. (2000). RADAR: An in-building RF-based user location and tracking system. In Proceedings IEEE INFOCOM 2000. Conference on Computer Communications. Nineteenth Annual Joint Conference of the IEEE Computer and Communications Societies (Cat. No. 00CH37064), 2000, vol. 2, pp. 775–784. 188. Li, D., Zhang, B., & Li, C. (2015). A feature-scaling-based $ k $-nearest neighbor algorithm for indoor positioning systems. IEEE Internet Things Journal, 3(4), 590–597. 189. Feng, C., Au, W. S. A., Valaee, S., & Tan, Z. (2011). Received-signal-strength-based indoor positioning using compressive sensing. IEEE Transactions on Mobile Computing, 11(12), 1983–1993. 190. Obeidat, H. A. N., et al. (2016). A comparison between vector algorithm and CRSS algorithms for indoor localization using received signal strength. Applied Computational Electromagnetics Society Journal, 31(8), 868–876.
+191. Khatab, Z. E., Moghtadaiee, V., & Ghorashi, S. A. (2017). A fingerprint-based technique for indoor localization using fuzzy Least Squares Support Vector Machine. In Iranian Conference on Electrical Engineering (ICEE), 2017, 1944–1949.
+192. Gucciardo, M., Tinnirello, I., Dell’Aera, G. M., & Caretti, M. (2019). A Flexible 4G/5G Control Platform for Fingerprint-based Indoor Localization. In IEEE INFOCOM 2019-IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS), 2019, pp. 744–749.
+193. Huang, P., Zhao, H., Liu, W., & Jiang, D. (2020). MAPS: Indoor Localization Algorithm Based on Multiple AP Selection. Mobile Networks Applications, pp. 1–8, 2020. 194. Wang, Y., Xiu, C., Zhang, X., & Yang, D. (2018). WiFi indoor localization with CSI fingerprinting-based random forest. Sensors, 18(9), 2869.
+
+
+326 H. Obeidat et al.
+13
+195. Yin, F., Zhao, Y., Gunnarsson, F., & Gustafsson, F. (2017). Received-signal-strength threshold optimization using Gaussian processes. IEEE Transactions on Signal Processing, 65(8), 2164–2177. 196. Elnahrawy, E., Li, R., & Martin, R. P. (2004). The limits of localization using signal strength: A comparative study. In 2004 First Annual IEEE Communications Society Conference on Sensor and Ad Hoc Communications and Networks, 2004. IEEE SECON 2004., 2004, pp. 406–414.
+197. Chandrasekaran, G. et al (2009). Empirical evaluation of the limits on localization using signal strength. In 2009 6th Annual IEEE Communications Society Conference on Sensor, Mesh and Ad Hoc Communications and Networks, 2009, pp. 1–9. 198. Zheng, J., & Jamalipour, A. (2009). Wireless sensor networks: a networking perspective. New York: John Wiley & Sons.
+Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+Huthaifa Obeidat is Assistant Professor at Communication and Electronics department at Jerash University in Jordan, he received the PhD in Electrical Engineering from the University of Bradford, UK, in 2018, he was awarded MSc degree in Personal Mobile and Satellite Communication from the same University in 2013. His research interests include Radiowave Propagation, millimetre wave propagation, e-health applications, Antenna and Location-Based Services. Obeidat has been a member of the Jordanian engineering association since 2011.
+Wafa Shuaieb was born in Elbida, Libya. She received the B.Eng. degree in electronics and electrical engineering from Omar Almukhtar University, Elbida, Libya in 2008 and M.Sc. in electrical and electronics engineering from Alexandria, Egypt, in 2010 and PhD in Electrical Engineering from University of Bradford in 2018. She has been a research student in the cryptography and use biometric traits in the generation of private keys in public cryptosystem in 2012 and she worked as assistant lecturer at electronic department in Omar Almukhtar University. She is currently working toward the PhD degree. Her research focus includes direction of arrival, includes location based services methodologies such as angle of arrival.
+
+
+327
+A Review of Indoor Localization Techniques and Wireless...
+13
+Omar Obeidat received his BSc degree in Electrical Engineering from Jordan University of Science and Technology 2006, in 2009 he was awarded MSc degree in Wireless Communication engineering from Al -Yarmouk University. He is a PhD Candidate at Wayne State University. His research interests include Non-destructive evaluation, thermal imaging and indoor localization services.
+Raed Abd‐Alhameed (M’02SM’13) is currently a Professor of electromagnetic and radiofrequency engineering with the University of Bradford, U.K. He is also the Leader of radiofrequency, propagation, sensor design, and signal processing; in addition to leading the Communications Research Group for years within the School of Engineering and Informatics, University of Bradford. He has long years’ research experience in the areas of radio frequency, signal processing, propagations, antennas, and electromagnetic computational techniques. He has published over 600 academic journal and conference papers; in addition, he has co-authored four books and several book chapters. He is a principal investigator for several funded applications to EPSRCs and the leader of several successful knowledge Transfer Programmes, such as with Arris (previously known as Pace plc), Yorkshire Water plc, Harvard Engineering plc, IETG Ltd., Seven Technologies Group, Emkay Ltd., and TwoWorld Ltd. He was a recipient of the Business Innovation Award for his successful KTP with Pace and Datong companies on the design and implementation of MIMO sensor systems and antenna array design for service localizations. He is the chair of several successful workshops on energyefficient and reconfigurable transceivers: Approach toward Energy Conservation and CO2 Reduction that addresses the biggest challenges for the future wireless systems. He has been a Guest Editor of IET Science, Measurements and Technology Journal since 2009. His interest in computational methods and optimizations, wireless and mobile communications, sensor design, EMC, beam steering antennas, energy-efficient PAs, and RF predistorter design applications. He is a fellow of the Institution of Engineering and Technology and a fellow of the Higher Education Academy and a Chartered Engineer.

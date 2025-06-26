@@ -1,0 +1,218 @@
+Cooperative Positioning Based on UWB and MDS
+Che Zhang*
+Sydney Smart Technology College North Eastern University Qinhuangdao, China zhangche373433978@163.com
+Abstract—In GNSS-denied environments, swarm drones struggle to obtain accurate location information, thus limiting their applications. Cooperative positioning involves utilizing wireless ranging among drones to determine their relative positions. This article assumes each drone is equipped with ultrawideband (UWB) nodes, and the swarm drones generates a distance-squared matrix through bidirectional ranging. Then, the multidimensional scaling (MDS) algorithm is employed to compute the relative coordinates of the swarm drones using the generated distance-squared matrix. Simulation results demonstrate the effectiveness of cooperative positioning in both two-dimensional and three-dimensional scenarios and provide insights into the positioning errors under various ranging noise influences. The simulation results validate the feasibility of this UWB and MDS-based cooperative positioning approach.
+Keywords—cooperative positioning, swarm drones, ultrawideband, multidimensional scaling
+I. INTRODUCTION
+The development of drone technology has led to a rapid increase in demand for drones across various industries, playing an increasingly important role. Unlike individual drones, swarm drones can accomplish more complex tasks through collaboration. Among the key technologies within swarm drones, relative positioning has garnered significant attention.
+Currently, satellite positioning technology is commonly used for swarm drones positioning, providing high accuracy in open areas. However, when drones operate in urban canyons or large indoor spaces, signal obstructions hinder satellite positioning, making it unable to provide precise locations for drones. In such scenarios, not only do swarm drones fail to complete their intended tasks, but the probability of collisions between drones also significantly increases. This highlights the urgent need for alternative positioning technologies, leading to the proposal of cooperative positioning.
+Cooperative positioning involves using wireless signal measurements between nodes with unknown positions to obtain distance information and thereby determine the relative positions of all nodes. The most common method of cooperative positioning involves initially selecting several nodes to establish a spatial coordinate system, followed by iteratively calculating the positions of other nodes. However, this method suffers from error propagation issues. In contrast, the multidimensional scaling (MDS) method offers higher positioning accuracy, better resistance to interference, and eliminates error propagation, making it increasingly preferred for cooperative positioning.
+The MDS localization algorithm was first proposed by Y. Shang et al. from Columbia University at the International Conference on Computer Communications in 2003 [1]. The MDS algorithm can calculate the relative positions of all nodes based solely on pairwise distance measurements. Initially, MDS localization primarily appeared in wireless sensor networks, where distance measurements between nodes were prone to significant errors due to energy-based signal reception. Even with the MDS algorithm, achieving precise cooperative positioning was challenging, making practical applications difficult.
+In recent years, ultra-wideband (UWB) technology has emerged, offering hope for achieving high-precision relative positioning using MDS technology. UWB's narrow pulse width enables more accurate measurement of wireless signal transmission times and is less susceptible to multipath reflections, resulting in distance measurement accuracies ranging from centimeters to decimeters.
+Combining UWB and MDS technologies to achieve highprecision cooperative positioning provides a practical solution for relative drone positioning within swarm drones. This paper introduces the basic principles of UWB ranging and the implementation process of the MDS algorithm, discusses the feasibility of combining these two technologies for swarm drones cooperative positioning, and validates the approach through simulation.
+II. UWB AND MDS
+A. UWB
+There are many commonly used wireless ranging techniques, such as those based on signal arrival time and those based on received signal strength. However, ranging techniques based on signal arrival time require time synchronization between the transmitter and receiver, which is difficult to meet with existing wireless clock synchronization techniques. On the other hand, ranging techniques based on received signal strength are heavily influenced by the environment, with ranging accuracy only reaching the meter level, making it difficult to meet the needs of cooperative positioning within swarm drones. The emergence of UWB technology has brought new changes to wireless ranging and high-precision positioning scenarios.
+UWB technology, as an emerging wireless technology, boasts high ranging accuracy, strong interference resistance, and real-time capabilities. Generally, UWB technology is believed to achieve ranging accuracy in the decimeter range, with the
+115
+2024 4th International Conference on Information Communication and Software Engineering
+979-8-3503-5169-9/24/$31.00 ©2024 IEEE
+2024 4th International Conference on Information Communication and Software Engineering (ICICSE) | 979-8-3503-5169-9/24/$31.00 ©2024 IEEE | DOI: 10.1109/ICICSE61805.2024.10625697
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 21:18:02 UTC from IEEE Xplore. Restrictions apply.
+
+
+highest accuracy reaching the centimeter level. There are various methods to implement ranging using UWB, but this article will only introduce the simplest one, called single-sided two-way ranging (SS-TWR). The principle of SS-TWR ranging is illustrated in Fig. 1. In SS-TWR ranging, both UWB nodes 1 and 2 must have the capability to both send and receive signals simultaneously. Assuming node 1 sends the initial ranging information at time t1, and node 2 receives this signal at time t2. After a certain processing delay, node 2 sends a response signal at time t3, which node 1 receives at time t4.
+t
+t
+1
+2
+t1
+t2 t3
+t4 T1
+T2
+Fig. 1. Schematic diagram of SS-TWR
+The distance between node 1 and node 2 can be calculated using the following equation:
+()
+( )( )
+()
+12 12
+41 32
+1
+2 1
+2
+r cT T
+c tt tt
+=  −
+=  − − −
+(1)
+Since T 1 and T 2 are calculated independently by the local clocks of nodes 1 and 2 respectively, the calculation of the distance r12 is not affected even if the clocks between node 1 and node 2 are not synchronized. Furthermore, because the timing of signal transmission and reception for each UWB node is very precise, it ensures accurate calculation of distance. Typically, ranging results can be considered accurate to within 0.1-0.3 meters [2], providing assurance for the operation of the MDS algorithm.
+1 2
+3
+4
+5
+2222 12 13 14 15 2 222 21 23 24 25 22 22 31 32 34 35 222 2 41 42 43 45 22 2 2 51 52 53 54
+0
+0
+0
+0
+0
+rrrr
+r rrr
+rr rr
+rrr r
+rrrr
+      
+
+Fig. 2. The process of generating the distance square matrix
+Assuming there are N drones, they can undergo pairwise ranging to form a distance-squared matrix. In the schematic diagram in Fig. 2, N is equal to 5. Subsequent MDS algorithms only require this distance-squared matrix to calculate the relative positions of the drone swarm.
+B. MDS
+The MDS algorithm is a method for data dimensionality reduction and visualization, originating from the field of psychology. It can transform high-dimensional data into a lower-dimensional space while preserving the distance relationships between data points, enabling intuitive observation and analysis of the data. In recent years, MDS has been widely applied in localization and mapping in wireless sensor networks and the internet of things (IoT).
+The MDS method utilizes a distance-squared matrix as input and, through computation, outputs the relative coordinates of all nodes. The specific process of MDS is illustrated in Fig. 3.
+2222 12 13 14 15 2 222 21 23 24 25 22 22 31 32 34 35 222 2 41 42 43 45 22 2 2 51 52 53 54
+0
+0
+0
+0
+0
+rrrr
+r rrr
+rr rr
+rrr r
+rrrr
+      
+
+1,1 1,2
+11
+2,1 2,2
+22
+N ,1 N,2
+NN
+vv
+xy vv
+xy
+vv
+xy
+
+ 
+ 
+
+= = 
+ 
+
+  
+P
+1)
+2)
+3)
+4)
+MDS
+1T N NN
+N
+C=I − e e
+''
+V=U 
+1 2
+3
+4
+5
+(x1, y1) (x2, y2)
+(x3, y3)
+(x4, y4)
+(x5, y5)
+1 2
+A = − CDC T
+A = UΛU
+
+12
+diag , , , N
+Λ=  
+Fig. 3. The process of MDS
+Although the specific derivation of the MDS algorithm is complex, it can be implemented using formulas directly. The relative coordinates of each node can be calculated by
+116
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 21:18:02 UTC from IEEE Xplore. Restrictions apply.
+
+
+manipulating the distance squared matrix. There are many opensource implementations of MDS algorithms available online, and there are also function modules for MDS algorithms in MATLAB and Python.
+The main operation steps of MDS are as follows [3]:
+1) The distance squared matrix generated in Fig. 2 is centered so that the data points are symmetric with respect to the origin. The centering matrix is calculated:
+1T N NN
+N
+C = I − e e (2)
+where IN is the identity matrix of dimensions of N and eN is a
+column vector of length N whose elements are all ones. The superscript T indicates a transpose operation. 2) Define another matrix A as
+1
+2
+A = − CDC (3)
+The matrix is then decomposed according to the principle of singular value decomposition as
+T
+A = UΛU (4)
+where  
+12
+diag , , , N
+Λ =    (5)
+is a diagonal matrix with the eigenvalues of A as its diagonal elements and U is a unitary matrix whose column vectors are the corresponding eigenvectors. The eigenvectors are then normalized to be unit eigenvectors and the eigenvalues are sorted in a nonincreasing order to form Λ' . The unit-vector matrix is rearranged accordingly, resulting in U' .
+3) The coordinates of all the nodes are estimated as the first two columns of the matrix
+''
+V = U  (6) 4) The coordinates of each node can be expressed as
+1,1 1,2
+11
+2,1 2,2
+22
+N ,1 N ,2
+NN
+vv
+xy
+vv
+xy
+vv
+xy
+
+  
+  
+
+= = 
+  
+  
+  
+P (7)
+P is a N  2 dimensional matrix, each row of which represents the two-dimensional coordinates of a node. The MDS algorithm is also capable of realizing three-dimensional localization, similar to the computational process in two dimensions, with the biggest difference being that the generated P is a N 3 dimensional matrix.
+III. SIMULATION RESULTS
+To validate the performance of the MDS algorithm, this study first conducted simulations in two-dimensional space using MATLAB, referencing open-source programs from GitHub [4]. The simulation environment comprised a 30m x 30m area with 10 simulated nodes, meeting the quantity requirements for swarm drones simulations, and the positions of these nodes were randomly generated. Considering the ranging accuracy of UWB nodes to be within 0.1-0.3 meters, Gaussian noise was added to each ranging result, with variances selected
+sequentially as 0.1m, 0.2m, 0.3m, 0.4m, and 0.5m. The average positioning errors for different white noise variances in cooperative positioning are shown in Table I.
+TABLE I. RELATIONSHIP BETWEEN RANGING NOISE VARIANCE AND LOCALIZATION ERROR IN 2-D SPACE
+Noise variance (m) 0.1 0.2 0.3 0.4 0.5
+Positioning error (m) 0.08 0.13 0.19 0.25 0.32
+From the statistical results in Table I, it can be observed that as the noise variance increases, the positioning accuracy obtained through MDS calculations significantly deteriorates. However, since the ranging error of UWB nodes is generally less than 0.3m, the cooperative positioning effect can still meet the requirements for phase positioning of swarm drones.
+Fig. 4 and Fig. 5 also depict the 2-D cooperative positioning results when the white noise variances are 0.1m and 0.5m. The true positions of each node are represented by blue circles, while the positions estimated by MDS are denoted by red crosses. It should be noted that since the MDS algorithm can only compute relative coordinates, there is a rotational relationship between the coordinates estimated by MDS and the true coordinates. However, to better showcase the effectiveness of the MDS algorithm, the coordinates computed by MDS are rotated close to the true coordinates, facilitating a clearer visualization of the error results.
+(a) Node Network Topology
+(b) Positioning results
+Fig. 4. 2-D Positioning results for a ranging noise variance of 0.1m
+117
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 21:18:02 UTC from IEEE Xplore. Restrictions apply.
+
+
+(a) Node Network Topology
+(b) Positioning results
+Fig. 5. 2-D Positioning results for a ranging noise variance of 0.5m
+As mentioned earlier, MDS is also applicable to cooperative positioning in three-dimensional space. Therefore, we next demonstrate the cooperative positioning results of the MDS algorithm in three-dimensional space. To maintain consistency with the two-dimensional space, the simulated environment is a cube with dimensions of 30m x 30m x 30m. Similarly, there are 10 nodes randomly distributed in the simulated environment, with the noise variance of distance measurements chosen sequentially as 0.1m, 0.2m, 0.3m, 0.4m, and 0.5m. The average errors of cooperative positioning under different noise variances are shown in Table II.
+TABLE II. RELATIONSHIP BETWEEN RANGING NOISE VARIANCE AND LOCALIZATION ERROR IN 3-D SPACE
+Noise variance (m) 0.1 0.2 0.3 0.4 0.5
+Positioning error (m) 0.12 0.28 0.39 0.61 0.72
+The statistical results from Table II indicate that as the noise variance increases, the positioning accuracy obtained through MDS calculations also decreases significantly. However, when the ranging error of the UWB nodes is less than 0.3m, the average error of cooperative positioning is less than 0.4 meters, which can generally meet the requirements for cooperative positioning of swarm drones.
+To visually demonstrate the results of 2-D cooperative positioning, Fig. 6 and Fig. 7 depict the three-dimensional
+cooperative positioning results when the noise variance is 0.1m and 0.5m, respectively. Likewise, the true positions and estimated positions of each node are represented by blue circles and red crosses, respectively.
+Fig. 6. 3-D Positioning results for a ranging noise variance of 0.1m
+Fig. 7. 3-D Positioning results for a ranging noise variance of 0.5m
+By comparing Table I and Table II, it can be observed that under the same ranging accuracy conditions, the positioning accuracy of MDS in three-dimensional space is slightly lower than that in two-dimensional space, possibly due to the stronger constraints in two-dimensional space.
+IV. CONCLUSION
+This paper introduces the basic principles of UWB ranging and the process of implementing cooperative positioning using the MDS algorithm. The simulation results also validate that this method can compute the relative positions of swarm drones in both two-dimensional and three-dimensional scenarios. In realworld scenarios, it is also necessary to consider how to schedule the transmission times of different UWB nodes to avoid conflicts caused by simultaneous transmission of signals by different UWB nodes. Additionally, it should be noted that the
+118
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 21:18:02 UTC from IEEE Xplore. Restrictions apply.
+
+
+cooperative positioning method based on MDS can only obtain the relative positions of all nodes. However, if the absolute coordinates of some nodes are known, it is possible to obtain the absolute spatial coordinates of all nodes through coordinate transformation methods.
+REFERENCES
+[1] Yi Shang, Wheeler Ruml, Ying Zhang, and Markus P. J. Fromherz, “Localization from mere connectivity,” in Proc. ACM MobiHoc, Annapolis, MD, USA, Jun. 2003, pp. 201–212. [2] Qorvo Homepage, https://cn.qorvo.com/innovation/ultra-wideband
+[3] Kegen Yu, Ian Sharp, Y. Jay Guo, Ground-Based Wireless Positioning. Publishing House of Electronic Industry, Beijing, 2012. [4] https://github.com/zenzondon/WSN-localization/tree/master/MDS-MAP
+119
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 21:18:02 UTC from IEEE Xplore. Restrictions apply.

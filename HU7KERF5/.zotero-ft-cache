@@ -1,0 +1,426 @@
+1488 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Multiple WiFi Access Points Co-Localization
+Through Joint AoA Estimation
+Shuai Yang , Dongheng Zhang , Ruiyuan Song, Pengfei Yin, and Yan Chen , Senior Member, IEEE
+Abstract—Indoor localization is a fundamental task to many real-world applications, which however remains unresolved, especially with commodity WiFi Access Points (APs). In this paper, we tackle this problem and propose an accurate, robust, and realtime indoor localization system that can be directly deployed on commodity WiFi infrastructure. Specifically, the proposed system makes three key contributions: 1) we introduce a non-parametric metric to measure the accuracy of Angle of Arrival (AoA) estimation; 2) we are the first to explicitly consider the relationship among the AoAs of different APs and propose a multiple APs co-localization algorithm to exploit such a relationship to improve the localization performance; 3) we propose several strategies to reduce the computational complexity of our system to achieve real-time localization. Extensive experiments are conducted to evaluate the performance of the proposed system under various situations, which demonstrate that the proposed system can achieve a 4 degrees median error of AoA estimation and 30 cm localization median error, outperforming the state-of-the-art systems.
+Index Terms—Indoor localization, CSI, co-localization, sparse recovery.
+I INTRODUCTION
+A
+S A fundamental task in various real-world applications including security surveillance [1], [2], human behavior analysis [3], [4] and indoor navigation [5], indoor localization has attracted widespread attention from both academia and industry in the past decade. Compared to vision-based technologies [6], [7], which are limited by the lighting conditions and privacy concerns, and radar-based techniques [8], [9], [10], [11] which are too expensive for large-scale deployment, WiFi-based systems [12], [13], [14], [15] are more desired and cost-effective due to the ubiquitous availability of WiFi devices [16], [17]. One possible localization solution is to estimate the Time of Flight (ToF) to derive the distance between the client and the Access Point (AP) [18], [19], [20], [21], [22]. However, due to the narrow bandwidth of WiFi signals, typically 20-160 MHz,
+Manuscript received 31 July 2022; revised 6 January 2023; accepted 14 January 2023. Date of publication 25 January 2023; date of current version 8 January 2024. This work was supported in part by the National Natural Science Foundation of China under Grant 62201542, in part by the fellowship of China Postdoctoral Science Foundation under Grant 2022M723069, and in part by the Fundamental Research Funds for the Central Universities. Recommended for acceptance by Paolo Casari. (Corresponding author: Yan Chen.)
+The authors are with the School of Cyber Science and Technology, University of Science and Technology of China, Hefei, Anhui 230027, China (e-mail: ys1025@mail.ustc.edu.cn; dongheng@ustc.edu.cn; rysong@mail.ustc.edu.cn; yinppengfei@mail.ustc.edu.cn; eecyan@ustc.edu.cn). This article has supplementary downloadable material available at https://doi.org/10.1109/TMC.2023.3239377, provided by the authors. Digital Object Identifier 10.1109/TMC.2023.3239377
+the resolution of ToF is low and thus the localization performance is poor. Although the resolution of ToF can be improved by virtual wideband [19], [23], these methods either cannot be directly used with commodity WiFi devices, or rely on channel hopping that inevitably interrupts regular data communications. Another possible localization solution is to first estimate the Angle of Arrival (AoA) using the multiple antennas of commodity WiFi devices together with the array signal processing techniques, and then localize the target through the estimated AoAs from different WiFi APs [24], [25], [26], [27], [28]. However, there are typically only three antennas on Commercial Off-The-Shelf (COTS) WiFi devices, resulting in limited AoA resolution. Although the traditional parametric methods [29], e.g., MUltiple SIgnal Classification (MUSIC) [30], can provide a super-resolution estimation, their performances degrade rapidly for coherent signals. Unfortunately, all the propagation paths from a specific transmitter are coherent because they are transmitted from the same device with the same center frequency. Some subspace-based methods even need to know the number of paths in advance, which is difficult to obtain in practice. All these factors have restricted the use of the classical parametric methods. The sparse recovery methods have also been utilized to provide a sharp spectrum, but their performance greatly depends on the selection of hyperparameter [31], [32], [33]. Improper selection of hyperparameter either causes the miss detection of weak targets, or leads to the inaccurate power estimation. More importantly, all existing methods [24], [25], [26], [27], [34], [35] estimate the AoA independently for each AP. However, these AoAs are actually coupled with each other since they are all determined by the locations of the same target and the APs. Therefore, it is critical to study the multi-AP AoA estimation problem, which however to the best of our knowledge is not investigated in the literature. In order to achieve an accurate, robust, and real-time localization system, the following three challenges need to be addressed: Challenge 1: How to Measure the Accuracy of the AoA Estimation? Although both the parametric methods and sparse recovery algorithms can provide high resolution, their performance is either severely degraded for coherent signals or depends on the selection of hyperparameters, which is not robust and universal in commodity WiFi devices. In this paper, we introduce a non-parametric sparse recovery method to measure the accuracy of AoA estimation. Note that the proposed system can robustly work in single snapshot situation, thus can also be used with coherent signal.
+1536-1233 © 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission. See https://www.ieee.org/publications/rights/index.html for more information.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1489
+Challenge 2: How to Jointly Estimate the AoAs of Different APs? When multiple APs are used to jointly localize the target, their AoAs are actually coupled with each other since they are all determined by the same target. However, to the best of our knowledge, none of the existing methods have studied this problem. In this paper, we formulate the multiple APs AoA estimation as an optimization problem and derive the corresponding solution that can achieve robust and accurate AoA estimation for all APs.
+Challenge 3: How to Achieve the Localization in Real Time? The computational complexity of the existing sparse recovery algorithms are typically high and the convergence speed depends on the selection of the initial value, thus far from achieving real-time localization [36], [37]. In this paper, we take advantage of the Toeplitz characteristic of the covariance matrix and efficient Fast Fourier Transform (FFT) implementation of matrix multiplication. Moreover, we also adopt a combination of coarse and fine-grained hierachical searching method to further speed up the algorithm. In such a way, we reduce the computation complexity by two orders of magnitude and thus achieve real-time localization. Our main contributions can be summarized as follows. To the best of our knowledge, we are the first to jointly estimate the AoAs of multiple WiFi APs. Although the existing multiple APs co-localization works [24], [25], [26], [27], [34], [35] combine the information among multiple APs, each AP calculates the AoA information independently. Actually, when multiple APs receive wireless signals from the same transmitter, their AoAs are coupled with each other. We consider this intrinsic information for the first time and formulate the multiple APs AoA estimation as an optimization problem and derive the corresponding solution that can achieve robust and accurate AoA estimation for all APs. We introduce a non-parametric metric to measure the accuracy of AoA estimation with snapshot of Channel State Information (CSI) data. Such a metric is an optimal solution to the weighted least square optimization problem, which can be obtained through an iterative manner. Compared to traditional parametric methods, e.g., MUSIC [30], our method can robustly work for coherent signals and single-snapshot situation. Besides, we also do not need to know the number of the paths in advance to select the noise subspace. Compared to commonly used compressed sensing algorithms, e.g., BP [38] and LASSO [32], our method is hyperparameter-free. We propose a real-time algorithm for the multiple APs colocalization. Specifically, we take advantage of the Toeplitz characteristic of the covariance matrix and efficient FFT implementation of matrix multiplication. Moreover, we also adopt a combination of coarse and fine-grained hierachical searching method to further speed up the algorithm. In such a way, we reduce the computation complexity by two orders of magnitude and thus achieve real-time co-localization. We conduct extensive experiments in different indoor environments. The experimental results show that the proposed
+TABLE I NOTATIONS
+method can achieve 4 degrees median error for AoA estimation and 30 cm median error for co-localization, which significantly outperforms the state-of-the-art methods. The rest of this paper is as follows. Section II discusses related work and Section III presents the system model. In Section IV, we present the problem formulation of the multiple APs joint AoA estimation and the corresponding solution. The experimental results are shown in Sections V and VI. Section VII discusses the limitations of the proposed system and our future research directions. Section VIII draws the conclusions. The notations adopted in this paper are listed in Table I.
+II RELATED WORK
+A. mmWave-Based Indoor Localization
+The mmWave technology has been used in radar and its applications for several decades [39]. The shorter wavelength of mmWave technology enables the integration of larger antenna arrays and improved AoA resolution. The combination
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1490 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+of mmWave technology and MIMO (Multiple Input Multiple Output) can further increase the array aperture and improve the resolution. Additionally, mmWave technology can utilize a larger bandwidth compared to sub-6G ones, which also enables higher resolution ToF information. These advantages make mmWave technology more suitable for high-precision indoor localization [40], [41], [42]. The first mmWave localization system [43] directly estimated the position of the target using RSSI. This approach was later extended to RSSI fingerprinting [44]. AoA and Angle Difference of Arrival (ADoA) techniques were also evaluated in [34], [45], [46] and were shown to achieve a good performance. In [47], the authors evaluated the performance of RSS-, TDoAand AoA-based localization methods using mmWave signals. In [34], JADE algorithm localized a client solely based on ADoA information, and mapped the environment by leveraging the relationship between physical and virtual anchors under the assumption of no initial environment knowledge. Since JADE algorithm is user-centric and measures AoA from surrounding APs, its localization accuracy will become more and more accurate with the arrival of new measurements. MultiLoc [48], the first system that achieves AoA and ToF estimation on commercial off-the-shelf devices, requires only one AP to achieve high-precision localization. Finally, passive mmWave localization is also studied in [49], [50], [51].
+B. WiFi-Based Indoor Localization
+Indoor localization using WiFi signal is a widely-studied problem which has attracted extensive attentions from both academia and industry in the last decade. WiFi based localization systems can be broadly classified into three categories: fingerprint-based, ToF-based and AoA-based systems.
+Fingerprint-Based Approaches: The fingerprint-based methods require the establishment of a database in advance to collect fingerprints corresponding to each position of the target in the entire range, such as Received Signal Strength Indicator (RSSI) [52], [53], [54]. In the localization stage, we can localize the target by comparing the measured RSSI with those in the database. According to [55], the fingerprint-based method can achieve a median accuracy of 0.6 m. However, this type of method requires a large amount of data collection in advance which is hard to be deployed in practice. ToF-Based Approaches: The ToF-based localization methods requires a large bandwidth to obtain a high ToF resolution [19], [20], [21], [22], [56]. Although the higher ToF resolution can be achieved by the virtual wide-band, these methods either cannot be used directly with commodity WiFi devices, or rely on channel hopping. Chronos [23] acquires accurate ToF estimations through hopping to plenty of WiFi channels on both 2.4 GHz and 5 GHz bands. However, the channel hopping is time-consuming and inevitably interrupts regular data communication. AoA-Based Approaches: Since modern WiFi devices are usually equipped with multiple antennas, researchers naturally use array signal processing technology to extract the AoA information of the target. In [35], ArrayTrack achieves a median error of 0.4 m by introducing as high as 8 antennas along
+with the traditional MUSIC algorithm. However, ArrayTrack is hardware dependent and requires a modification of the antenna array which cannot be directly deployed on the commodity WiFi devices. To achieve accurate AoA estimation on commodity devices, Ubicarse [24] enables devices to emulate a synthetic aperture radar (SAR) which could increase the antenna aperture virtually. However, it requires the person holding the device to perform a specific circular motion to achieve localization, which is not practical in many scenarios. To obtain accurate estimation without additional efforts, algorithmic improvements have been achieved. In [25], SpotFi utilizes spatial smoothing MUSIC algorithm to jointly estimate AoA and ToF information from Orthogonal Frequency Division Multiplexing (OFDM) subcarriers. Spatial smoothing could avoid the performance degradation caused by coherent signals which is common in WiFi devices. However, it will also sacrifices the array aperture and limits the spatial resolution. Compressed sensing algorithms have also been considered for indoor localization. In [26], RoArray utilizes the second-order cone programming to obtain a sharp spectrum even in low signal-to-noise ratio (SNR) situation. However, the performance of RoArray largely depends on the selection of hyperparameter. Improper selection of hyperparameter will either causes the miss detection of weak targets, or leads to the inaccurate power estimation. Besides, the calculation complexity of sparse recovery methods is usually too high to meet the requirements of real-time localization [26], [57]. Multipath can also be used to achieve indoor localization according to [28], [58]. However, these methods require multiple transmitter antennas to extract Angle of Departure (AoD) information, which increases the hardware cost. In [59], UbiLocate achieves an accurate indoor localization performance by fusing the AoA, AoD and ToF information, which solves the problem of performance degradation in Non Line of Sight (NLoS) scenarios. Besides, UbiLocate adopts the latest IEEE 802.11ac protocol, which allows the use of more antennas and larger bandwidths. Similar to [28], [58], UbiLocate also requires hardware modification to obtain additional AoD information and achieve higher resolution ToF estimation. The proposed framework is different from these existing systems in three aspects. First, we introduce a non-parametric sparse recovery metric to measure the accuracy of AoA estimation. Second, we are the first to explicitly consider the relationship among the AoAs of different APs and propose a multiple APs co-localization algorithm to exploit such a relationship to improve the localization performance. Third, we propose several strategies to reduce the computational complexity of our system to achieve real-time localization.
+III SYSTEM MODEL
+As shown in Fig. 1, we consider an indoor localization system with one terminal device serving as the transmitter to be localized, and three APs serving as the receivers. Besides, there are several static reflectors in the environment, such as walls and furniture. For simplicity, we assume the transmitter and the three receivers are in the same height except for special analysis.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1491
+Fig. 1. An illustration of the multiple APs co-localization system.
+We further assume that the transmitter is equipped with one antenna while each of the receivers is equipped with a uniform linear array comprising M antennas. Each wireless channel is divided into a set of K subcarriers where the carrier frequency is fk, k = 1, . . . , K. The rich reflections in indoor environments yield L major propagation paths between the transmitter and the receiver. Thus, the received CSI signal can be expressed as
+ym,k(t) =
+∑L
+l=1
+αl (t)e−j 2πfk τl (t) e−j 2πfk
+(m−1)dsinθl (t)
+c (1)
+where m, k, l and t denote the index of the receiver antenna, subcarrier, propagation path, and the time slot, respectively, αl(t) is the complex attenuation coefficient, which is supposed to be the same for all antennas and subcarriers, θl(t) and τl(t) denote the AoA and ToF of the lth path, respectively, d is the space interval between two adjacent antennas and c is the speed of light. Note that the joint phase shift from the CSI of the mth antenna and the kth subcarrier to that of the first antenna and the first subcarrier can be written as
+Φmk(θl, τl) = exp
+(
+−j2π
+(
+(k − 1) f τl + f1
+(m − 1)dsinθl c
++(k − 1) f (m − 1)dsinθl
+c
+))
+(2)
+where f1 denotes the carrier frequency of the first subcarrier and f denotes the frequency interval between two adjacent subcarriers. With M antennas and K subcarriers, the phase shift vector a ∈ CMK×1 can be written as
+a(θl, τl) = [1 Φ21(θl, τl) · · · Φmk(θl, τl) · · · ΦMK (θl, τl)]T . (3) Combining all the L paths, the steering matrix A ∈ CMK×L is defined as
+A = [a(θ1, τ1) a(θ2, τ2) · · · a(θL, τL)]. (4)
+Considering the measurement error caused by noise, the measured CSI y ∈ CMK×1 in (1) can be re-written in a matrix form
+as follows
+y=
+∑L
+l=1
+a(θl, τl)αl + e = Aα + e (5)
+where e denotes the zero-mean circularly symmetric complex Gaussian white noise with δ2 variance. To transform (5) into a sparse recovery problem, let us define L1 and L2 to be the number of the AOA and TOF grid points, respectively. In order to ensure sparsity, the number of the grid points L1 and L2 are usually 5 to 10 times the number of the real paths. Then the signal model in (5) can be represented in the following sparse form:
+y = vec(Y) = vec(A1SAT
+2 ) + e = Avec(S) + e (6)
+where
+Y=
+⎡
+⎢⎢⎣
+y(1, 1) y(1, 2) · · · y(1, K)
+... ... . . . ...
+y(M, 1) y(M, 2) · · · y(M, K)
+⎤
+⎥⎥⎦ ∈ CM×K (7)
+represents the received CSI and
+S=
+⎡
+⎢⎢⎣
+α1,1 α1,2 · · · α1,L2
+... ... . . . ...
+αL1,1 αL1,2 · · · αL1,L2
+⎤
+⎥⎥⎦ ∈ CL1×L2 (8)
+is the complex-valued amplitude matrix in which αl1,l2 is the amplitude at grid point pair (l1, l2), vec(·) represents the vectorization operator. The steering matrix A = A2 ⊗ A1 and A1, A2 can be represented as:
+A1 =
+[
+a1(θ1) a1(θ2) · · · a1(θL1 )
+] ,
+A2 =
+[
+a2(τ1) a2(τ2) · · · a2(τL2 )
+] ,
+(9)
+where
+a1(θl1 ) =
+⎡
+⎢⎢⎣
+1
+...
+exp( −j2πdsinθl1 (M −1)
+λ)
+⎤
+⎥⎥⎦ ∈ CM×1, (10)
+and
+a2(τl2 ) =
+⎡
+⎢⎢⎣
+1
+...
+exp(−j2π f τl2 (K − 1))
+⎤
+⎥⎥⎦ ∈ CK×1,
+(11)
+and ⊗ denotes the Kronecker product. Traditionally, the AoA of each AP is estimated independently, which is however suboptimal since these AoAs are actually coupled with each other through the same location of the transmitter. In this paper, we propose to jointly estimate the AoAs of all APs
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1492 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Fig. 2. System overview: In step 1, the CSI data generated and sent by the target will be received by several APs. In step 2, after receiving the CSI data, each AP calculates the initial AoA θ(0)
+i and the inverse of the covariance matrix R−1
+i in parallel. In step 3, the initial AoA pair {θ(0)
+i }|iI=1 will converge to the final
+optimal AoA pair {θˆi}|iI=1 based on multiple APs co-localization. Finally, we project the optimal AoA pair {θˆi}|iI=1 back to location.
+as follows
+mu,ivn
+I ∑
+i=1
+D(θi),
+s.t. θi = Ti(u, v), i = 1, . . . , I (12)
+where D(·) denotes the metric of AoA accuracy, Ti(·) represents the transformation function that transforms the target position (u, v) into the AoA information corresponding to the ith AP, {θi}|iI=1 denotes the AoA of ith AP and is determined by the
+relative position and orientation between ith AP and the target, and I is the number of APs.
+IV CO-LOCALIZATION ALGORITHM
+In this section, we will systematically introduce the proposed co-localization algorithm as shown in Fig. 2. First of all, we will introduce the metric to measure the accuracy of the estimated AoA. Then, we discuss how to formulate the multiple AP colocalization problem and derive the corresponding solution. We also discuss the fast implementation to achieve the real-time localization.
+A. Metric of AoA Estimation Accuracy
+In order to achieve an accurate and robust localization result, we need to select an appropriate metric D(·) in (12). Given the known steering matrix A ∈ CMK×L1L2 and the received CSI data y ∈ CMK×1, the main goal of spectral analysis is to estimate the unknown sparse matrix S ∈ CL1L2×1 in (6). Many popular sparse recovery methods are based on regularizing the least-square method by penalizing a norm of the parameter vector S, trying to reach a balance between data fidelity and parameter sparsity. While such sparse methods can estimate S in highly underdetermined scenarios, most of them require the careful selection of user-defined regularization hyperparameters [32], [38], [60]. In this paper, we adopt a hyperparameter-free sparse recovery method and estimate the sparse matrix S by minimizing the
+following weighted least square problem [61]:
+min
+αl1 ,l2
+[y − αl1,l2 a(θl1 , τl2 )]H Q−1[y − αl1,l2 a(θl1 , τl2 )],
+l1 = 1, . . . , L1; l2 = 1, . . . , L2 (13)
+where Q represents the interference (signals at grid points other than the current interest θl1 , τl2 ) and noise covariance matrix as follows:
+Q(l1, l2) = R − pl1,l2 a(l1, l2)aH (l1, l2), (14)
+and R denotes the covariance matrix:
+R APAH , (15)
+with P being a L1L2 × L1L2 diagonal matrix, whose diagonal element pl1,l2 is the power at grid point tuple (θl1 , τl2 ) and can be obtained by calculating the square of the absolute value of the matrix S in (8):
+pl1,l2 = |αl1,l2 |2, l1 = 1, . . . , L1; l2 = 1, . . . , L2. (16)
+Taking the derivative of (13) with respect to αl1,l2 , we can obtain the optimal solution to (13) as:
+αˆl1,l2 = aH (θl1 , τl2 )Q−1y
+aH (θl1 , τl2 )Q−1a(θl1 , τl2 ) . (17)
+Using (14) and the matrix inverse lemma, (17) can be rewritten as: (The detailed derivation can be found in Appendix A, available online)
+αˆl1,l2 = aH (θl1 , τl2 )R−1y
+aH (θl1 , τl2 )R−1a(θl1 , τl2 ) . (18)
+As we can see from (15) and (16), the covariance matrix R depends on the unknown signal powers P, thus (18) can be implemented in an iterative manner. The initialization of the algorithm is done by the standard delay and sum (DAS). According to our extensive empirical results, it only needs 10 iterations to reach convergence. In practice, the complex multipath reflections also produce strong peaks, some of which may have the highest power. After
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1493
+Algorithm 1: AoA Estimation Accuracy Metric.
+obtaining the joint AoA-ToF spectrum (18), we directly select the peak with the smallest ToF value as the direct path and fix the ToF value. Then we take θ as a variable to find the optimal AoA value in the AoA spectrum corresponding to this fixed ToF value. The optimal AoA occurs at the power maximum of the spectrum, and this optimal AoA value can be obtained by maximizing (18). Maximizing (18) is equivalent to minimize the inverse of (18):
+mθla1x
+aH (θl1 , τl2 )R−1y
+aH (θl1 , τl2 )R−1a(θl1 , τl2 ) (19)
+=⇒ mθli1n
+aH (θl1 , τl2 )R−1a(θl1 , τl2 )
+aH (θl1 , τl2 )R−1y . (20)
+Thus, the optimal AoA value corresponds to the minimum value of (20). Since the ToF value is fixed 1, we omit the τl in (20) and take the rest as the metric of AoA estimation accuracy, i.e., D(·), in (12) as follows:
+D(θ) = aH (θ)R−1a(θ)
+aH (θ)R−1y . (21)
+We summarize the procedure of AoA estimation accuracy metric in Algorithm 1. Remark 1: Traditional parametric methods such as MUSIC, obtain the covariance matrix through data fitting, e.g., R = yyH , which requires a large amount of data to accurately estimate the covariance matrix and would suffer from severe performance degradation when the signals are coherent. In the proposed method, the covariance matrix R is learned from the CSI data y through (15) and (18) in an iterative manner, and
+1Note that by fixing the ToF value, we can eliminate the influence of multipath on AoA estimation. Besides, in the subsequent multi-APs joint AoA estimation, we only need to consider AoA because the ToF value of the direct path of each AP has been fixed.
+Fig. 3. (a). When multiple APs are used to co-locate the target, their AoAs are actually coupled with each other since they are all determined by the same target at (u, v); (b). After replacing the variables (u, v) with the true AoAs and introducing the Lagrangian multiplier β, the relationship between the AoAs of different APs is guaranteed by the latter l2-norm term in (23), which means the
+deviation between the AoA tuple to be estimated {θi}|iI=1 and the true AoA
+tuple {θi∗}|iI=1 should be minimal.
+thus can overcome the disadvantages of traditional parametric methods.
+B. Multiple APs Joint AoA Estimation
+When multiple APs are utilized to co-localize the target, the AoA of each AP is actually coupled with each other since they are all determined by the location of the same target as shown in Fig. 3(a). Substituting (21) into (12), we have
+mu,ivn
+I ∑
+i=1
+aH (θi)R−1
+i a(θi) aH (θi)R−1
+i yi
+,
+s.t. θi = Ti(u, v), i = 1, . . . , I (22)
+where (u, v) represents the location of the target. The location of the target, i.e., (u, v), can be uniquely determined by the true AoAs of the APs, i.e., θ1∗, ..., θI∗. Therefore, by
+replacing the variables (u, v) with the true AoAs and introducing the Lagrangian multiplier β, the constrained optimization problem in (22) can be reformulated as a non-constrained optimization problem as follows:
+min
+θ1 ,...,θI
+I ∑
+i=1
+aH (θi)R−1
+i a(θi) aH (θi)R−1
+i yi
++β
+( I ∑
+i=1
+‖θ∗
+i − θi‖2
+2
+)
+(23)
+where β denotes the Lagrangian multiplier, and {θi∗}|iI=1 denote the true AoA tuple relative to the position of target. As we can see in (23), the optimization goal is to find the true AoA tuple {θi∗}|iI=1, which appear in the latter l2-norm item. Thus, (23) can be solved in an iterative manner. We first calculate the term of AoA spectrum estimation as shown in (20) and take the corresponding optimal AoA tuple as the initial value, which can be represented as:
+θ(0)
+i = arg min
+θi
+aH (θi)R−1
+i a(θi) aH (θi)R−1
+i yi
+, i = 1, . . . , I. (24)
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1494 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Algorithm 2: Multiple APs Joint AoA Estimation.
+Then we transform the initial AoA tuple {θ(0)
+i }|iI=1 to the position parameter as shown in Section IV.C, and this position will produces I optimized AoA value {θ(0∗)
+i }|iI=1. Then by replacing
+{θi∗}|iI=1 in (23) with {θ(0∗)
+i }|iI=1, we can obtain the updated
+AoA tuple {θ(1)
+i }|iI=1 by solving the following optimization problem:
+[θ(1)
+1 , . . . , θ(1)
+I ] = arg min
+θ1 ,...,θI
+I ∑
+i=1
+aH (θi)R−1
+i a(θi) aH (θi)R−1
+i yi
++β
+( I ∑
+i=1
+∥∥∥θ(0∗)
+i − θi
+∥∥∥
+2
+2
+)
+. (25)
+According to our extensive experiments, we found that the optimal AoA tuple is near the initial AoA tuple {θ(0∗)
+i }|iI=1. 2 Therefore, (25) can be solved by performing a local traversal search around {θ(0∗)
+i }|iI=1. In order to reduce the complexity of local traversal search, we adopt a combination of coarse and finegrained hierachical searching method and this will be introduced in detail in Section IV.D.
+After obtaining {θ(1)
+i }|iI=1, we also transform them to the
+position parameter and get the optimized AoA value {θ(1∗)
+i }|iI=1.
+Then we replace {θ(0∗)
+i }|iI=1 in (25) with {θ(1∗)
+i }|iI=1 and obtain
+the updated AoA tuple {θ(2)
+i }|iI=1 similarly. In this way, we
+iteratively update the AoA tuple {θi}|iI=1 until practical convergence. The iteration procedure can be represented as follows:
+2A detailed explanation can be found in Appendix B, available in the online supplemental material.
+Algorithm 3: The Proposed Co-Localization System.
+[θ(j+1)
+1 , . . . , θ(j+1)
+I ] = arg min
+θ1 ,...,θI
+I ∑
+i=1
+aH (θi)R−1
+i a(θi) aH (θi)R−1
+i yi
++β
+( I ∑
+i=1
+∥∥∥θ(j∗)
+i − θi
+∥∥∥
+2
+2
+)
+. (26)
+The convergence analysis of (25) is presented in Appendix C, available in the online supplemental material. We summarize
+the solution to (23) in Algorithm 2 and denote {θˆi}|iI=1 as the final optimal AoA tuple. Remark 2: In (22), the AoA information of different APs are coupled together by the position parameter (u, v). In (23), as we can see, the optimization objective has changed from
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1495
+position (u, v) to AoA tuple {θi}|iI=1. The relationship between AoAs of multiple APs is guaranteed by the latter l2-norm item in (23), which means the deviation between the AoA tuple to be estimated {θi}|iI=1 and the true AoA tuple {θi∗}|iI=1 should be minimal as shown in Fig. 3(b). Besides, note that each AP receives packets from the transmitter at the same time and we can use the parallel computing function to simultaneously calculate the initial AoA value θ(0)
+i
+and the inverse of the covariance matrix {Ri} for each AP. In this way, we change the data processing of the entire system from serial to parallel and the calculation time can be reduced by a factor of I.
+C. From AoA to Location
+Once we obtain the optimal AoA tuple {θˆi}|iI=1 of multiple APs, we need to project them back to the location parameter (u, v). The locations of APs are assumed to be known in practice. Note that our system can work robustly with any number of APs (more than 1), here we only take three APs as an example to better introduce our system. With the optimal AoA of each AP, we can calculate the slope of each ray according to the orientation of each antenna array. The rays emitted from three APs along the corresponding AoA will form a triangle, and we take the center of the triangle as the location of the target. The location of the target can be represented as follows:
+[uˆ, vˆ] =
+[ u12 + u13 + u23
+3 , v12 + v13 + v23
+3
+]
+(27)
+where [(u12, v12), (u13, v13), (u23, v23)] represent the intersection of the corresponding subscript APs. Its value is related to the position, orientation and the AoA value of the three APs. For simplicity, we set the number of APs to 3 and summarize the entire co-localization system in Algorithm 3.
+D. Real-Time Implementation
+In practice, indoor localization systems typically require realtime implementation, which limits the widespread use of sparse recovery algorithms in this field. In [26], it takes 10 seconds to generate an AoA-ToF spectrum, which is far from meeting the requirements of real-time application. In this section, we will introduce some fast implementation to reduce the processing time of the entire system to meet the requirement of real-time localization. 1) Noting that the steering matrix A has a Vandermonde structure, which means that R APAH is Toeplitz, in addition to being Hermitian. This means that we only need to compute the first row (or column) of R. Besides, by exploiting the Gohberg-Semencul (G-S)-type factorization of R−1, R−1 can be quickly calculated by Levinson-Durbin (L-D)-type algorithm [62]. Finally, the matrix multiplication with the steering vector can be quickly calculated by FFT/IFFT. According to the analysis in [63], the whole complexity of computing the initial AoA and the inverse of covariance matrix R−1 can be reduced from O(M K(L1L2)2) to O(L1L2 log(L1L2)).
+Fig. 4. (a). Direct search; (b). Example of the combination of coarse and fine-grained hierachical searching method.
+2) According to Algorithm 3, we need to perform a threedimensional joint traversal search for three AoAs. In order to reduce the complexity of the traversal search, we use a combination of coarse and fine-grained hierachical searching method as shown in Fig. 4(b). We first select slightly large grid point interval for three angles. After finding the sub-optimal 3-D AoA tuple corresponding to the smallest value of (26), a fine-grained search around the sub-optimal AoA tuple is performed. In this way, the computational complexity of the whole search procedure can be greatly reduced. For example, if we directly search within 10 degrees around the initial AoA tuple with interval of 0.1 degree as shown in Fig. 4(a), the search complexity is O(1003). But if we first search with intervals of 1 degree, find the 3-D sub-optimal AoA tuple and then search at intervals of 0.1 degrees around the sub-optimal AoA tuple as shown in Fig. 4(b). The search complexity becomes O(103), which has decreased a lot. To sum up, we take advantage of the Toeplitz characteristic of the covariance matrix and efficient FFT implementation of matrix multiplication. Moreover, we adopt a combination of coarse and fine-grained hierachical searching method to further speed up the algorithm. The initial AoA θ(0)
+i and R−1 of different APs can be calculated in parallel. In such a way, we reduce the computation complexity by two orders of magnitude. From our extensive experiments, the time to obtain a location of the target has been reduced from 15 s to 0.15 s after using these fast implementations, which makes the proposed system suitable for real-time co-localization.
+V IMPLEMENTATION
+A. Experiment Setup
+We implement the proposed co-localization system on the mini-computer equipped with commodity Intel 5300 WiFi NIC which has three antennas. Each antenna is placed with a spacing
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1496 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Fig. 5. The device used in experiments: (a). Mini computer and Intel 5300 half mini NIC; (b). The internal structure of the device.
+of 2.7 cm (nearly half the wavelength of 5.3 GHz band) as shown in Fig. 5(a). The mini-computer is employed with the CSI Tool [64] to measure CSI of each packet from NIC’s PHY layer. To localize the target, CSIs from multiple WiFi chips are needed and thus we employ three mini-computers equipped with WiFi NICs as APs. We use another mini-computer with the same configuration as the target whose location is of interest. The WiFi NICs of all APs operate in monitor mode and keep listening to the 5 GHz wireless channel. In the experiment, the target AP uses a single antenna and keeps sending packets at channel 62 with the bandwidth of 40 MHz. Once receiving the packet from target, three receivers obtain the CSI of 3 antennas and 30 subcarriers from their firmware and send them to a central server. The central server is a laptop with a CPU of 1.6 GHz and a memory of 6 GB. We deploy our system in a variety of indoor environments. Fig. 6(a), (b), (c), and (d) shows the layouts of four scenarios: the first is large-size office (16 × 10 m2) with complex multipath reflections; the second is a median-size laboratory (8.5 × 5.5 m2); the third is a meeting room (10 × 8 m2) with a big table in the center; the last is the narrow corridor (6 × 2.1 m2) with walls and corners. The photos of these experimental environments are also shown in Fig. 6(e), (f), (g), and (h). The target locations are marked as green rectangle and the AP locations are marked as red rectangle. The packet transmission rate is set to 50 pkts/s. Moreover, the height of the device is fixed in all experiments except for studying the impact of heights in Section VI.E.
+B. Phase Offset Calibration
+The proposed co-localization system estimates the AoAs of APs, and there are mainly two types of phase offset that will affect our AoA estimation. One is introduced by phase lock loop (PLL) phase offset and we deploy the method provided by [35] to calibrate it. This phase offset is stable and we only need to calibrate it one time before the experiment starts [65]. The other
+kind of phase offset comes from the sampling frequency offset (SFO) and symbol timing offset (STO). According to [66], the time delay added by SFO and STO is the same for all the paths and the ToF difference between a pair of two paths is invariant. In the proposed system, we only use the relative value of ToF to determine the direct path, thus there is no need to consider the impact of SFO and STO.
+C. Direct-Path Selection
+In general, the ToF value corresponding to the direct path is the smallest. Therefore, we choose the path with the smallest ToF as the direct path.
+D. Baseline Methods
+We implement two algorithms as baseline: MUSIC, SpotFi [25] and compare them with the proposed co-localization system under the same experimental scenarios. MUSIC generates the signal subspaces and noise subspaces from the eigenvalue decomposition on the autocorrelation matrix, and then obtains the AoA estimation via the orthogonality between the noise subspaces and the steering matrix. Thus each path corresponds to a peak in the pseudo spectrum of MUSIC. However, MUSIC requires that the number of the antennas should be larger than the number of the paths, which generally cannot be satisfied on the commodity WiFi devices. SpotFi creatively fuses the space and frequency information of CSI and deploys the 2-D MUSIC with spatial smoothing to estimate the AoA and ToF. After obtaining three AoAs from three APs individually, SpotFi use triangulation to localize the target.
+VI RESULTS
+A. Overall Performance Comparison
+1) AoA Accuracy: The performance of the AoA estimation with different methods is shown in Fig. 7, where the target is moving within an 8.5m × 5.5m laboratory. We can see that the proposed method can achieve 4.2 degrees median accuracy, which is much better than MUSIC and SpotFi [25]. 2) Localization Accuracy: The localization performance of different methods is shown in Fig. 8. As we can see, the proposed system can achieve 35 cm median accuracy while SpotFi’s localization median error is 80 cm under the same condition. The performance of MUSIC without spatial smoothing is even worse. The performance gain of the proposed method is mainly due to the following two factors. The first one is that we adopt a non-parametric sparse recovery metric which can provide an accurate AoA estimation even under coherent signal condition. The second one is that we consider the coupling effect of the AoAs of different APs and jointly optimize the AoAs to obtain a more accurate localization performance.
+3) Time Complexity Comparison: The time required for MUSIC [30], SpotFi [25], and the proposed algorithm to perform localization is shown in Fig. 9. Here, the computation time is averaged over 100 experiments. As we can see from Figs. 8 and 9, the proposed algorithm achieves the best
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1497
+Fig. 6. Experimental environments including office, laboratory, meeting room, and corridor: (a-d) are the layouts; (e-h) are the snapshots of the environments.
+Fig. 7. AoA estimation performance comparison among different methods in the laboratory environment.
+localization performance with computation time close to MUSIC. 3 A specific time complexity analysis of the proposed algorithm is presented in Section VI.F. Here, the CSI data is processed on DESKTOP-8R0M8IA with Intel Core i7 processor.
+B. Dynamic Target Localization
+1) Experimental Setup and Results: Fig. 10(a) and (b) show the trajectory generated by the proposed system. From left to right, the transmitter moves at a constant speed of approximately 1m/s along a rectangle and zigzag in the laboratory, and keeps sending packets to the three receiving APs. The transmitter sends 50 packets per second to the three receiving APs, and the transmission time is set to 8 seconds. After receiving a total of 400 packets, we apply the proposed algorithm to each of them
+3The computation time of SpotFi is obtained by running the open source code in [25].
+Fig. 8. Localization performance comparison among different methods in the laboratory environment.
+to obtain 400 positions. Finally, we use the smooth function that comes with MATLAB (essentially interpolation) to fit these discrete points into a smooth curve. Since the purpose of our system is to locate the target, not to track it, we simply connect the localization results of the transmitter at different positions to form a trajectory. As we can see in Fig. 10(a) and (b), the proposed system can accurately rebuild the trajectory of the transmitter and reliably infer the changes of direction. 4 2) Impact of Speed: In this experiments, the transmitter moves along a rectangle with a length of 6 m at velocities of 0.5 m/s, 1 m/s, and 1.5 m/s, respectively. In order to allow the transmitter to complete the entire trajectory, we set different transmission times according to the moving speed of the transmitter. For example, when the transmitter moves at a speed of 1.5 m/s, the transmission time is 4 seconds, and when the speed
+4Note that if some tracking methods are used to constrain the information of the trajectory in the time dimension, a more accurate trajectory can be obtained, which is beyond the scope of this paper.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1498 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Fig. 9. The time complexity comparison among different methods in the laboratory environment.
+Fig. 10. The trajectory formed by the continuous positioning of the moving transmitter: (a) The transmitter moves along a rectangle; (b) The transmitter moves along a zigzag.
+Fig. 11. The impact of speed on system localization performance.
+is 1 m/s, the transmission time is 6 seconds, respectively. As we can see from Fig. 11, the median localization error of the system in dynamic target scenarios is 36 cm, which is similar to that in the stationary target scene, and the moving speed of the transmitter has little effect on system localization error.
+C. Impact of Environments
+We then evaluate the impact of the environment on localization performance. In Fig. 12, we show the performance under four different environments. We can see that the proposed method achieves the best performance in the laboratory with 35 cm median localization error and the worst performance in the office with 92 cm median localization error. Such a phenomenon is mainly due to the fact the office is the largest room with the lowest SNR, and lots of tables and chairs create complex
+Fig. 12. The impact of different environments on the localization performance.
+Fig. 13. CDF of localization error for LoS and NLoS scenarios.
+multipath reflections, while the laboratory is relatively open with only few obstructions. The performance in the corridor is median with 50 cm median localization error. Note that although the corridor is the smallest, it has a more complicated multipath environment than the laboratory due to the walls and corners. The localization performance in the meeting room is slightly worse than that in the corridor, mainly because of the larger space in the meeting room and the complex multipath reflections created by the big table, walls and ceiling. From Fig. 12, we can see that the proposed localization system can work robustly in a variety of environments.
+D. Evaluation in LoS and NLoS Scenarios
+Then, we compare the localization performance of the proposed method in Line of Sight (LoS) and NLoS scenarios. To create this environment, we place three cardboard boxes (height: 30 cm; width: 30 cm; thickness: 12 cm) containing metal inside in the middle of the three APs and the target and perform localization experiments in the laboratory. From Fig. 13, we can see that the median localization error under the NLoS scenario is 61 cm, which is larger than that under the LoS scenario. The reason is that when we block the LoS signal, the direct path becomes weak and it is difficult to accurately distinguish from strong multipath signals in complex environments. Therefore, it introduces more errors in the AoA estimation, which in turn degrades the overall localization performance.
+E. Impact of Heights
+In our system model, we assume that the heights of the target and APs are the same. Here, we relax this assumption
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1499
+Fig. 14. The impact of the height difference between receiver and target. “-20 cm” represents the target is 20 cm below the receiving APs. “Ceiling” means that the receiving APs are placed on the ceiling (2.5 m in height) and the height of the target is 1.2 m.
+TABLE II TIME COMPLEXITY ANALYSIS
+and evaluate the impact of different heights on the localization performance. In this experiment, the height of the three APs is fixed at 1.2 m above the ground. The height of the target to be localized changes from 0.8 m to 1.6 m with a step size of 0.2 m. Fig. 14 shows the median localization error for each height. As we can see, the localization error of the proposed system increases as the absolute height difference between the target and the AP increases. When the target and the three APs are on the same plane, the localization error is the smallest. Nevertheless, even when there is a height difference of 1.3 m (the receiving APs are placed on the ceiling, and the height of the target is 1.2 m), the median localization error is 93 cm, which means that the proposed localization system can work robustly in practice.
+F. Time Complexity Analysis
+As we introduced in Section IV.D, we employ three strategies to reduce the complexity of the system. First, we exploit the characteristics of the Toeplitz matrix and use FFT to calculate the matrix multiplication. Second, we adopt a combination of coarse and fine-grained hierachical searching method to further reduce the search complexity. Third, the initial AoA pair θ(0)
+i
+and R−1
+i of different APs can be calculated in parallel. In order to better illustrate the time complexity of the whole system, we show the time required for each step in the multiAPs joint localization algorithm in Table II. In our experiment, the AoA and ToF grid point number L1 and L2 are set to be 900 and 160. As for the local traversal search, we first search within plus or minus 5 degrees of the initial AoA with a step size of 1 degree, and then search with a step size of 0.1 degree. The CSI data is processed on DESKTOP-8R0M8IA with Intel Core i7 processor. As we can see from Table II, by utilizing those fast implementations, the computation time of the system
+Fig. 15. The impact of the number of APs.
+Fig. 16. Analysis of time complexity for different number of APs.
+is reduced from 15 s to the 0.1 second level, which makes our system suitable for real-time co-localization.
+G. Impact of the Number of APs
+In this part, we investigate how the number of APs impacts the localization accuracy of our system. By varying the number of APs from 2 to 4, we present the localization results in Fig. 15. We observe that the localization accuracy improves with the increase of the number of APs. This is because the more APs, the more information is available, and the target can be located more accurately. At the same time, the increase of the number of APs can also eliminate the negative impact of noise on the localization results to a certain extent. We can see that the median localization error of the proposed system are 24 cm, 33 cm, and 57 cm with 4, 3, and 2 APs respectively. Note that the more APs we use, the higher the searching complexity as shown in Fig. 16. For each additional AP, we need to perform an additional dimension traversal search. When the number of APs in the system changes from 3 to 4, the calculation time of this part increases from 0.08 s to 0.6 s, which may not meet the requirements of real-time localization. Since the initial AoA
+θ(0)
+i and R−1
+i of different APs is calculated in parallel, the computational complexity of this part will not increase with the number of APs. In order to reach a good balance between the localization performance and the computational complexity, 3 APs will be a good choice in practice.
+H. Impact of Mobility
+In order to evaluate the impact of mobility on the localization performance of our system, we conducted an additional set of experiments in the office. A total of three people are moving
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1500 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+Fig. 17. The impact of mobility on system localization performance.
+in the office at a speed of approximately 1 m/s. For a space of 16m × 10m, this is a relatively sparse environment. The experimental results are presented in Fig. 17. As we can see from Fig. 17, when there is no movement of people in the office, the median localization error is 0.92 m. When there are people walking around in the office but does not affect the direct transmission between the transmitter and the receiving APs, the median localization error is still 0.92 m. The mobility of the people in this environment has little effect on system localization performance. We also conducted a challenging experiment, in which three people stood in front of the transmitter to block the direct path transmission between the transmitter and the three receivers. The result is shown by the green line in Fig. 17. As we can see from Fig. 17, in the case of NLoS, the localization performance of the system is affected to some extent, and the median localization error is 1.30 m. This is also consistent with the experimental results in Section VI.D.
+VII DISCUSSION
+In this paper, our experiments are conducted in controlled lab environments. When our system is deployed in real-world environments, such as shopping malls, museums, etc., there will be some limitations. First, WiFi devices should provide both communication and sensing services. Second, the problem of performance degradation in NLoS scenarios should be addressed. Third, how to visualize the distribution of the landmarks in the environment? Finally, hardware modifications are required to obtain additional information such as AoD, ToF, etc. to achieve a more accurate localization performance. The detailed descriptions are as follows.
+A. Diversity of the Devices
+Since our system only utilizes three antennas and the AoA information extracted from them, the localization accuracy is limited. In follow-up work, we will use devices with more antennas to achieve a higher resolution AoA estimation. In addition, we will also make hardware modifications to obtain additional information, like AoD, ToF, etc. At the same time, we will also try different antenna arrangements, such as uniform area array, uniform circular array, etc., and compare their AoA estimation performance.
+B. Real-World Deployment
+In this work, we conducted all the experiments on commercial Intel 5300 devices which cannot provide communication services. Although commercial routers on the market can provide communication services, few of them have open-source CSI Tool to acquire CSI [67]. At present, we are cooperating with related manufacturers to develop tools for CSI acquisition. Conducting experiments in crowded venues like shopping malls and museums will be our follow-up research direction. 5
+C. Performance Degradation in NLoS Scenarios
+As we can see in Sections VI.D and VI.H, the system localization performance degrades when there are metal objects or crowds blocking the direct path between the transmitter and the receivers. In practice, this phenomenon is likely to occur frequently. In the follow-up work, we will study how to efficiently solve the problem of system performance degradation in NLoS scenarios.
+D. Visualize the Distribution of Landmarks
+In dense and crowded environments, the only concern comes from the fact that there may be no direct signal propagation path between the transmitter and the receivers. As introduced in Section VI.D, the system localization performance degrades in NLoS scenarios. In order to avoid the occurrence of NLoS, we carefully choose the way of AP placement.
+The Position of the AP. Let us take the office (16m × 10m) in Fig. 6(e) as an example, we placed three APs in an approximate equilateral triangle to ensure that at least 2 APs are within lineof-sight in each 8m × 10m area. In the corridor, we expect to place an AP every ten meters to ensure that there are at least 2 APs in every ten meters of space. In this way, we can achieve localization accuracy within 1 meter. This is a very interesting problem that we will face when the proposed system is deployed in real-world environments, and we will study it in detail in our follow-up work. The Height of the AP. The height of the receiving AP should be determined according to the actual environment. When there are few people in the scenario, we can place the receiving APs at the same height as the transmitter. When there are many people in the scenario, we need to place the receiving APs in a relatively high position to avoid the movement of the crowd blocking the direct path transmission. Although placing the receiving APs in a relatively high position can avoid crowds blocking the direct path transmission, it also sacrifices certain localization accuracy. Determining the height of the receiving AP is a trade-off in practice.
+VIII CONCLUSION
+In this paper, we studied the indoor localization problem and proposed an accurate, robust and real-time indoor multiple APs
+5Note that the above discussion is aimed at the acquisition of CSI, and does not affect the generality of the algorithm proposed in this paper. Our algorithm can work robustly in any device that can acquire CSI.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+YANG et al.: MULTIPLE WIFI ACCESS POINTS CO-LOCALIZATION THROUGH JOINT AOA ESTIMATION 1501
+co-localization system that can be directly deployed on existing commodity WiFi infrastructure. To the best of our knowledge, this work is the first to jointly estimate the AoAs of multiple APs by explicitly exploiting the corresponding inherent relationship. Moreover, to achieve real-time localization, we proposed multiple strategies to speed up the proposed method. Extensive experiments were conducted to demonstrate that the proposed system achieved 4 degrees median error for AoA estimation and 30 cm median error for co-localization, which significantly outperformed the state-of-the-art methods.
+REFERENCES
+[1] J. Lv, D. Man, W. Yang, L. Gong, X. Du, and M. Yu, “Robust device-free intrusion detection using physical layer information of WiFi signals,” Appl. Sci., vol. 9, no. 1, 2019, Art. no. 175. [2] T. Wang, D. Yang, S. Zhang, Y. Wu, and S. Xu, “Wi-Alarm: Low-cost passive intrusion detection using WiFi,” Sensors, vol. 19, no. 10, 2019, Art. no. 2335. [3] Y. Zou, W. Liu, K. Wu, and L. M. Ni, “Wi-Fi radar: Recognizing human behavior with commodity Wi-Fi,” IEEE Commun. Mag., vol. 55, no. 10, pp. 105–111, Oct. 2017. [4] Y. Gu, X. Zhang, Z. Liu, and F. Ren, “BeSense: Leveraging WiFi channel data and computational intelligence for behavior analysis,” IEEE Comput. Intell. Mag., vol. 14, no. 4, pp. 31–41, Nov. 2019. [5] Y. Zhuang, Z. Syed, Y. Li, and N. El-Sheimy, “Evaluation of two WiFi positioning systems based on autonomous crowdsourcing of handheld devices for indoor navigation,” IEEE Trans. Mobile Comput., vol. 15, no. 8, pp. 1982–1995, Aug. 2016. [6] M. Werner, M. Kessel, and C. Marouane, “Indoor positioning using smartphone camera,” in Proc. Int. Conf. Indoor Positioning Indoor Navigation, 2011, pp. 1–6. [7] J. Wolf, W. Burgard, and H. Burkhardt, “Robust vision-based localization by combining an image-retrieval system with Monte Carlo localization,” IEEE Trans. Robot., vol. 21, no. 2, pp. 208–216, Apr. 2005. [8] Y. Chen, H. Deng, D. Zhang, and Y. Hu, “SpeedNet: Indoor speed estimation with radio signals,” IEEE Internet Things J., vol. 8, no. 4, pp. 2762–2774, Feb. 2021. [9] D. Zhang, Y. Hu, and Y. Chen, “MTrack: Tracking multiperson moving trajectories and vital signs with radio signals,” IEEE Internet Things J., vol. 8, no. 5, pp. 3904–3914, Mar. 2021. [10] D. Zhang, Y. He, X. Gong, Y. Hu, Y. Chen, and B. Zeng, “Multitarget AOA estimation using wideband LFMCW signal and two receiver antennas,” IEEE Trans. Veh. Technol, vol. 67, no. 8, pp. 7101–7112, Aug. 2018. [11] S. Yang and X. Shang, “Iterative approaches to interference mitigation for automotive radar,” in Proc. IEEE Radar Conf., 2022, pp. 1–5. [12] C. Chen, Y. Chen, Y. Han, H.-Q. Lai, F. Zhang, and K. R. Liu, “Achieving centimeter-accuracy indoor localization on WiFi platforms: A multiantenna approach,” IEEE Internet Things J., vol. 4, no. 1, pp. 122–134, Feb. 2017. [13] C. Chen, Y. Chen, Y. Han, H.-Q. Lai, and K. R. Liu, “Achieving centimeteraccuracy indoor localization on WiFi platforms: A frequency hopping approach,” IEEE Internet Things J., vol. 4, no. 1, pp. 111–121, Feb. 2017. [14] Y. Chen, X. Su, Y. Hu, and B. Zeng, “Residual carrier frequency offset estimation and compensation for commodity WiFi,” IEEE Trans. Mobile Comput., vol. 19, no. 12, pp. 2891–2902, Dec. 2020. [15] Y. Han, Y. Chen, B. Wang, and K. R. Liu, “Enabling heterogeneous connectivity in Internet of Things: A time-reversal approach,” IEEE Internet Things J., vol. 3, no. 6, pp. 1036–1047, Dec. 2016. [16] Z. Yang, Z. Zhou, and Y. Liu, “From RSSI to CSI: Indoor localization via channel response,” ACM Comput. Surv., vol. 46, no. 2, pp. 1–32, 2013. [17] Y. He, Y. Chen, Y. Hu, and B. Zeng, “WiFi vision: Sensing, recognition, and detection with commodity MIMO-OFDM WiFi,” IEEE Internet Things J., vol. 7, no. 9, pp. 8296–8317, Sep. 2020. [18] L. Schauer, F. Dorfmeister, and M. Maier, “Potentials and limitations of WiFi-positioning using time-of-flight,” in Proc. Int. Conf. Indoor Positioning Indoor Navigation, 2013, pp. 1–9.
+[19] J. Xiong, K. Sundaresan, and K. Jamieson, “ToneTrack: Leveraging frequency-agile radios for time-based indoor wireless localization,” in Proc. 21st Annu. Int. Conf. Mobile Comput. Netw., 2015, pp. 537–549. [20] S. A. Golden and S. S. Bateman, “Sensor measurements for Wi-Fi location with emphasis on time-of-arrival ranging,” IEEE Trans. Mobile Comput., vol. 6, no. 10, pp. 1185–1198, Oct. 2007.
+[21] F. Zhao, W. Yao, C. C. Logothetis, and Y. Song, “Super-resolution TOA estimation in OFDM systems for indoor environments,” in Proc. IEEE Int. Conf. Netw., Sens. Control, 2007, pp. 723–728.
+[22] M. Youssef, A. Youssef, C. Rieger, U. Shankar, and A. Agrawala, “PinPoint: An asynchronous time-based location determination system,” in Proc. 4th Int. Conf. Mobile Syst., Appl. Serv., 2006, pp. 165–176.
+[23] D. Vasisht, S. Kumar, and D. Katabi, “Decimeter-level localization with a single WiFi access point,” in Proc. 13th {USENIX} Symp. Netw. Syst. Des. Implementation, 2016, pp. 165–178. [24] S. Kumar, S. Gil, D. Katabi, and D. Rus, “Accurate indoor localization with zero start-up cost,” in Proc. 20th Annu. Int. Conf. Mobile Comput. Netw., 2014, pp. 483–494. [25] M. Kotaru, K. Joshi, D. Bharadia, and S. Katti, “SpotFi: Decimeter level localization using WiFi,” in Proc. ACM Conf. Special Int. Group Data Commun., 2015, pp. 269–282. [26] W. Gong and J. Liu, “RoArray: Towards more robust indoor localization using sparse recovery with commodity WiFi,” IEEE Trans. Mobile Comput., vol. 18, no. 6, pp. 1380–1392, Jun. 2019. [27] J. Gjengset, J. Xiong, G. McPhillips, and K. Jamieson, “Phaser: Enabling phased array signal processing on commodity WiFi access points,” in Proc. 20th Annu. Int. Conf. Mobile Comput. Netw., 2014, pp. 153–164.
+[28] E. Soltanaghaei, A. Kalyanaraman, and K. Whitehouse, “Multipath triangulation: Decimeter-level WiFi localization and orientation with a single unaided receiver,” in Proc. 16th Annu. Int. Conf. Mobile Syst., Appl., Serv., 2018, pp. 376–388. [29] H. Krim and M. Viberg, “Two decades of array signal processing research: The parametric approach,” IEEE Signal Process. Mag., vol. 13, no. 4, pp. 67–94, Jul. 1996. [30] R. Schmidt, “Multiple emitter location and signal parameter estimation,” IEEE Trans. Antennas Propag., vol. 34, no. 3, pp. 276–280, Mar. 1986. [31] E. J. Candès and M. B. Wakin, “An introduction to compressive sampling,” IEEE Signal Process. Mag., vol. 25, no. 2, pp. 21–30, Mar. 2008. [32] R. Tibshirani, “Regression shrinkage and selection via the Lasso,” J. Roy. Stat. Soc. Ser. B, vol. 58, no. 1, pp. 267–288, 1996. [33] D. Zhang, Y. Hu, Y. Chen, and B. Zeng, “BreathTrack: Tracking indoor human breath status via commodity WiFi,” IEEE Internet Things J., vol. 6, no. 2, pp. 3899–3911, Apr. 2019. [34] J. Palacios, P. Casari, and J. Widmer, “JADE: Zero-knowledge device localization and environment mapping for millimeter wave systems,” in Proc. IEEE Conf. Comput. Commun., 2017, pp. 1–9.
+[35] J. Xiong and K. Jamieson, “ArrayTrack: A fine-grained indoor location system,” in Proc. 10th {USENIX} Symp. Netw. Syst. Des. Implementation, 2013, pp. 71–84. [36] D. L. Donoho, “Compressed sensing,” IEEE Trans. Inf. Theory, vol. 52, no. 4, pp. 1289–1306, Apr. 2006.
+[37] Y. C. Eldar and G. Kutyniok, Compressed Sensing: Theory and Applications. Cambridge, U.K.: Cambridge Univ. Press, 2012. [38] S. S. Chen, D. L. Donoho, and M. A. Saunders, “Atomic decomposition by basis pursuit,” SIAM Rev., vol. 43, no. 1, pp. 129–159, 2001. [39] M. Abouzahra and R. Avent, “The 100-kW millimeter-wave radar at the Kwajalein Atoll,” IEEE Antennas Propag. Mag., vol. 36, no. 2, pp. 7–19, Apr. 1994. [40] C. Fiandrino, H. Assasa, P. Casari, and J. Widmer, “Scaling millimeterwave networks to dense deployments and dynamic environments,” Proc. IEEE, vol. 107, no. 4, pp. 732–745, Apr. 2019. [41] J. Palacios, P. Casari, H. Assasa, and J. Widmer, “LEAP: Location estimation and predictive handover with consumer-grade mmWave devices,” in Proc. IEEE Conf. Comput. Commun., 2019, pp. 2377–2385.
+[42] J. Palacios, G. Bielsa, P. Casari, and J. Widmer, “Single-and multipleaccess point indoor localization for millimeter-wave networks,” IEEE Trans. Wireless Commun., vol. 18, no. 3, pp. 1927–1942, Mar. 2019. [43] M. Vari and D. Cassioli, “mmWaves RSSI indoor network localization,” in Proc. IEEE Int. Conf. Commun. Workshops, 2014, pp. 127–132.
+[44] A. Olivier, G. Bielsa, I. Tejado, M. Zorzi, J. Widmer, and P. Casari, “Lightweight indoor localization for 60-GHz millimeter wave systems,” in Proc. IEEE 13th Annu. Int. Conf. Sens., Commun., Netw., 2016, pp. 1–9. [45] G. Bielsa, J. Palacios, A. Loch, D. Steinmetzer, P. Casari, and J. Widmer, “Indoor localization using commercial off-the-shelf 60 GHz access points,” in Proc. IEEE Conf. Comput. Commun., 2018, pp. 2384–2392. [46] J. O. Lacruz, D. Garcia, P. J. Mateo, J. Palacios, and J. Widmer, “mmFLEX: An open platform for millimeter-wave mobile full-bandwidth experimentation,” in Proc. 18th Int. Conf. Mobile Syst., Appl., Serv., 2020, pp. 1–13. [47] H. El-Sayed, G. Athanasiou, and C. Fischione, “Evaluation of localization methods in millimeter-wave wireless systems,” in Proc. IEEE 19th Int. Workshop Comput. Aided Model. Des. Commun. Links Netw., 2014, pp. 345–349.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
+
+
+1502 IEEE TRANSACTIONS ON MOBILE COMPUTING, VOL. 23, NO. 2, FEBRUARY 2024
+[48] A. Blanco, P. J. Mateo, F. Gringoli, and J. Widmer, “Augmenting mmWave localization accuracy through sub-6 GHz on off-the-shelf devices,” in Proc. 20th Annu. Int. Conf. Mobile Syst., Appl. Serv., 2022, pp. 477–490.
+[49] D. Garcia, J. O. Lacruz, P. J. Mateo, and J. Widmer, “POLAR: Passive object localization with IEEE 802.11 ad using phased antenna arrays,” in Proc. IEEE Conf. Comput. Commun., 2020, pp. 1838–1847.
+[50] C. Wu, F. Zhang, B. Wang, and K. R. Liu, “mmTrack: Passive multi-person localization using commodity millimeter wave radio,” in Proc. IEEE Conf. Comput. Commun., 2020, pp. 2400–2409. [51] T. Wei and X. Zhang, “mTrack: High-precision passive tracking using millimeter wave radios,” in Proc. 21st Annu. Int. Conf. Mobile Comput. Netw., 2015, pp. 117–129. [52] K. Chintalapudi, A. Padmanabha Iyer, and V. N. Padmanabhan, “Indoor localization without the pain,” in Proc. 16th Annu. Int. Conf. Mobile Comput. Netw., 2010, pp. 173–184. [53] A. Haeberlen, E. Flannery, A. M. Ladd, A. Rudys, D. S. Wallach, and L. E. Kavraki, “Practical robust localization over large-scale 802.11 wireless networks,” in Proc. 10th Annu. Int. Conf. Mobile Comput. Netw., 2004, pp. 70–84. [54] S. Sen, J. Lee, K.-H. Kim, and P. Congdon, “Avoiding multipath to revive inbuilding WiFi localization,” in Proc. 11th Annu. Int. Conf. Mobile Syst., Appl., Serv., 2013, pp. 249–262. [55] M. Youssef and A. Agrawala, “The horus WLAN location determination system,” in Proc. 3rd Int. Conf. Mobile Syst., Appl., Serv., 2005, pp. 205218. [56] A. T. Mariakakis, S. Sen, J. Lee, and K.-H. Kim, “SAIL: Single access point-based indoor localization,” in Proc. 12th Annu. Int. Conf. Mobile Syst., Appl., Serv., 2014, pp. 315–328.
+[57] K. Joshi, D. Bharadia, M. Kotaru, and S. Katti, “WiDeo: Fine-grained device-free motion tracing using RF backscatter,” in Proc. 12th {USENIX} Symp. Netw. Syst. Des. Implementation, 2015, pp. 189–204.
+[58] Z. Chen et al., “M 3: Multipath assisted Wi-Fi localization with a single access point,” IEEE Trans. Mobile Comput., vol. 20, no. 2, pp. 588–602, Feb. 2021. [59] A. B. Pizarro, J. P. Beltrán, M. Cominelli, F. Gringoli, and J. Widmer, “Accurate ubiquitous localization with off-the-shelf IEEE 802.11 AC devices,” in Proc. 19th Annu. Int. Conf. Mobile Syst., Appl., Serv., 2021, pp. 241–254. [60] J. A. Tropp, “Just relax: Convex programming methods for identifying sparse signals in noise,” IEEE Trans. Inf. Theory, vol. 52, no. 3, pp. 1030–1051, Mar. 2006. [61] P. Stoica et al., Spectral Analysis of Signals, vol. 452. Upper Saddle River, NJ, USA: Prentice-Hall, 2005. [62] S. Zohar, “The solution of a Toeplitz set of linear equations,” J. ACM (JACM), vol. 21, no. 2, pp. 272–276, 1974. [63] M. Xue, L. Xu, and J. Li, “IAA spectral estimation: Fast implementation using the Gohberg-Semencul factorization,” IEEE Trans. Signal Process., vol. 59, no. 7, pp. 3251–3261, Jul. 2011. [64] D. Halperin, W. Hu, A. Sheth, and D. Wetherall, “Tool release: Gathering 802.11 n traces with channel state information,” ACM SIGCOMM Comput. Commun. Rev., vol. 41, no. 1, pp. 53–53, 2011. [65] D. Zhang, Y. Hu, Y. Chen, and B. Zeng, “Calibrating phase offsets for commodity WiFi,” IEEE Syst. J., vol. 14, no. 1, pp. 661–664, Mar. 2020. [66] Y. Xie, J. Xiong, M. Li, and K. Jamieson, “mD-Track: Leveraging multidimensionality for passive indoor Wi-Fi tracking,” in Proc. 25th Annu. Int. Conf. Mobile Comput. Netw., 2019, pp. 1–16.
+[67] J. Ni et al., “Experience: Pushing indoor localization from laboratory to the wild,” in Proc. 28th Annu. Int. Conf. Mobile Comput. Netw., 2022, pp. 147–157.
+Shuai Yang received the BS degree from the University of Science and Technology of China (USTC) in 2019. He is currently working toward the PhD degree with the School of Cyber Science and Technology, University of Science and Technology of China (USTC). His research interests include wireless sensing and signal processing.
+Dongheng Zhang received the BS and PhD degrees from the University of Electronic Science and Technology of China, Chengdu, China, in 2017 and 2021, respectively. He is currently a postdoctoral researcher with the School of Cyber Science and Technology, University of Science and Technology of China, Hefei, China. His research interests are in signal processing, wireless communications and networking.
+Ruiyuan Song received the BS degree from the Chengdu University of Technology (CDUT), Chengdu, China, in 2020. He is currently working toward the PhD degree with the School of Cyber Science and Technology, University of Science and Technology of China (USTC). His research interests include multimodal machine learning, signal processing, and wireless sensing.
+Pengfei Yin received the BS degree from the University of Science and Technology of China (USTC) in 2021. He is currently working toward the MS degree with the University of Science and Technology of China (USTC), Hefei, China. His research interests include wireless sensing and signal processing.
+Yan Chen (Senior Member, IEEE) received the bachelor’s degree from the University of Science and Technology of China in 2004, the MPhil degree from the Hong Kong University of Science and Technology in 2007, and the PhD degree from the University of Maryland, College Park, MD, USA, in 2011. He was with Origin Wireless Inc. as a founding principal technologist. From 2015 to 2020, he was a professor with the School of Information and Communication Engineering, the University of Electronic Science and Technology of China. He is currently a professor with the School of Cyber Science and Technology, the University of Science and Technology of China. His research interests include multimodal sensing and imaging, multimedia signal processing, and wireless multimedia. He is a coauthor of “Reciprocity, Evolution, and Decision Games in Network and Data Science” (Cambridge University Press, 2021) and “Behavior and Evolutionary Dynamics in Crowd Networks: An Evolutionary Game Approach” (Springer, 2020), as well as co-author of more than 200 technical papers including more than 100 IEEE journal papers. He is the associate editor for IEEE Transactions on Network Science and Engineering (TNSE) and IEEE Transactions on Signal and Information Processing over Networks (TSIPN). He was the Chair for APSIPA Signal and Information Processing Theory and Methods (SIPTM) Technical Committee, a distinguished lecturer for APSIPA, the Secretary-General for the CES Young Scientist Network Multimedia Technical Committee. He was an Organizing co-chair of PCM 2017, a Special Session co-chair of APSIPA ASC 2017, the 10K Best Paper Award committee member of ICME 2017, the Multimedia Communications Symposium Lead chair of WCSP 2019, an area chair for ACM Multimedia 2021, a TPC co-chair of APSIPA ASC 2021 and APSIPA ASC 2022. He was the recipient of multiple honors and awards, including an Excellent Editor for IEEE Transactions on Network Science and Engineering in 2021 and 2022, the best paper award runner-up for IEEE MMSP 2022, the best paper award for the APSIPA ASC in 2020, the best student paper award for the PCM in 2017, the best student paper award for the IEEE ICASSP in 2016, the best paper award for the IEEE GLOBECOM in 2013.
+Authorized licensed use limited to: Texas A M University. Downloaded on June 17,2025 at 18:57:07 UTC from IEEE Xplore. Restrictions apply.
