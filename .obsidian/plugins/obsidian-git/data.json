@@ -14,7 +14,7 @@
   "disablePopupsForNoChanges": false,
   "listChangedFilesInMessageBody": false,
   "showStatusBar": true,
-  "updateSubmodules": false,
+  "updateSubmodules": true,
   "syncMethod": "merge",
   "customMessageOnAutoBackup": false,
   "autoBackupAfterFileChange": false,
@@ -30,7 +30,7 @@
   "submoduleRecurseCheckout": false,
   "gitDir": "",
   "showFileMenu": true,
-  "authorInHistoryView": "hide",
+  "authorInHistoryView": "full",
   "dateInHistoryView": false,
   "diffStyle": "split",
   "lineAuthor": {
